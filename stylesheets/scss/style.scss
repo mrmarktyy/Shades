@@ -31,7 +31,14 @@ body {
   right: 0;
   text-align: center;
   color: white;
-  letter-spacing: 14px
+  letter-spacing: 14px;
+  &.out {
+    -webkit-transition: -webkit-transform 0.5s ease;
+            transition: transform 0.5s ease;
+    -webkit-transform: translate3d(0, -400px, 0);
+            transform: translate3d(0, -400px, 0);
+  }
+
 }
 
 .lane {
@@ -42,6 +49,10 @@ body {
   &:active,
   &.active {
     background-color: rgba(255, 255, 255, 0.15);
+  }
+  &.fade {
+    -webkit-transition: background-color 0.5s ease;
+            transition: background-color 0.5s ease;
   }
 }
 

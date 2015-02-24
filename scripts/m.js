@@ -90,7 +90,8 @@ $(function() {
     this.welcome = function () {
       var self = this;
       $('.shade').remove();
-      $('.lane-2').addClass('active');
+      $('.lane-2').addClass('active fade');
+      this.$gametitle.removeClass('out');
       this.curLane = 2;
 
       this.createShade(0, 4, 0);
@@ -125,7 +126,8 @@ $(function() {
         moving.shade.on(ANIMATION_END_EVENTS, function() {
           moving.shade.off(ANIMATION_END_EVENTS);
           self.checkCombine(self.curLane, function () {
-            console.log('done');
+            $('.lane-2').removeClass('active');
+            self.$gametitle.addClass('out');
           });
         });
         moving.shade.css({
