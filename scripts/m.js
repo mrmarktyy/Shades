@@ -105,17 +105,15 @@ $(function() {
       var lane = this.curLane;
       var color = 0;
       var position = 4;
-      var x = this.getX(lane);
       var y = this.getY(position);
       var moving = {
         shade: $('<div />')
-          .addClass('shade welcome color-' + color)
+          .addClass('shade welcome color-' + color + ' lane-' + lane)
           .attr('data-color', color)
           .css({
-            'transform': 'translate3d(' + x + 'px, 0, 0)',
-            '-webkit-transform': 'translate3d(' + x + 'px, 0, 0)'
+            'transform': 'translate3d(0, 0, 0)',
+            '-webkit-transform': 'translate3d(0, 0, 0)'
           }),
-        x: x,
         y: y
       };
       this.$game.append(moving.shade);
@@ -131,8 +129,8 @@ $(function() {
           });
         });
         moving.shade.css({
-          'transform': 'translate3d(' + x + 'px, ' + y + 'px, 0)',
-          '-webkit-transform': 'translate3d(' + x + 'px, ' + y + 'px, 0)'
+          'transform': 'translate3d(0, ' + y + 'px, 0)',
+          '-webkit-transform': 'translate3d(0, ' + y + 'px, 0)'
         });
       }, 100);
     };
@@ -140,7 +138,7 @@ $(function() {
     this.reset = function () {
       this.lanes = [[], [], [], []];
       this.shades = [0, 0, 0, 0, 0];
-      this.curLane = 1;
+      this.curLane = 0;
       this.theme = 1;
     };
 
@@ -156,11 +154,10 @@ $(function() {
 
       this.$prepareShade = $('<div />')
         .addClass('shade prepare-1 color-' + color)
-        .attr('data-lane', lane)
-        .attr('data-color', color).css({
+        .attr('data-lane', lane).attr('data-color', color)
+        .css({
           'width': '100%',
-          'height': INIT_SHADE_HEIGHT + 'px',
-          'left': 0
+          'height': INIT_SHADE_HEIGHT + 'px'
         });
 
       this.$game.append(this.$prepareShade);
@@ -168,77 +165,78 @@ $(function() {
 
     this.transformShade = function () {
       var self = this;
-      var lane = this.$prepareShade.data('lane');
+      this.curLane = this.$prepareShade.data('lane');
       this.$prepareShade.on(ANIMATION_END_EVENTS, function() {
         self.$prepareShade.on(ANIMATION_END_EVENTS, function () {
           self.$prepareShade.on(ANIMATION_END_EVENTS, function () {
             self.$prepareShade.off(ANIMATION_END_EVENTS);
             self.$prepareShade.removeClass('prepare-2');
             self.$activeShade = self.$prepareShade;
+            console.log('fall');
             self.fall();
           });
           // get ready
-          var x = self.getX(lane);
           self.$prepareShade.css({
             'height': '',
             'left': '',
-            'transform': 'translate3d(' + x + 'px, 0, 0)',
-            '-webkit-transform': 'translate3d(' + x + 'px, 0, 0)'
+            'transform': 'translate3d(0, 0, 0)',
+            '-webkit-transform': 'translate3d(0, 0, 0)'
           });
         });
-        // height=>SHADE_HEIGHT
-        self.$prepareShade.css({
-          'width': '',
-          'height': SHADE_HEIGHT
-        }).removeClass('prepare-1').addClass('prepare-2');
+        // height => SHADE_HEIGHT
+        self.$prepareShade
+          .css({
+            'width': '',
+            'height': SHADE_HEIGHT + 'px'
+          }).removeClass('prepare-1').addClass('prepare-2');
       });
-      // width=>25%
+      // width => 25%
       setTimeout(function () {
-        self.$prepareShade.css({
-          'left': lane * 25 + '%',
-          'width': '25%'
-        });
+        self.$prepareShade
+          .addClass('lane-' + self.curLane)
+          .css({'width': '25%'});
       }, 100);
     };
 
     this.fall = function () {
-      this.curLane = this.$activeShade.data('lane');
+      var self = this,
+          y = 1500;
+
       this.shades[this.$activeShade.data('color')] ++;
-      this.$activeShade.removeAttr('data-lane');
+      this.$activeShade
+        .css({
+          'transform': 'translate3d(0, ' + y + 'px, 0)',
+          '-webkit-transform': 'translate3d(0, ' + y + 'px, 0)',
+        });
       this.locked = false;
-      var y = 0;
-      var self = this;
+
       setTimeout(function () {
         self.prepareShade();
       }, 1000);
       (function loop () {
-        y += INC;
         var len = self.lanes[self.curLane].length,
-            x = self.getX(self.curLane),
+            y = self.$activeShade[0].getBoundingClientRect().top,
             max_y = self.getY(len);
         if (max_y - y <= LOCK_Y) {
           self.locked = true;
         }
         if (!self.locked) {
           window.requestAnimationFrame(loop);
-
-          self.$activeShade.css({
-            'transform': 'translate3d(' + x + 'px, ' + y + 'px, 0)',
-            '-webkit-transform': 'translate3d(' + x + 'px, ' + y + 'px, 0)',
-          });
         } else {
-          self.lanes[self.curLane].push({shade: self.$activeShade, x: x, y: max_y});
+          self.lanes[self.curLane].push({shade: self.$activeShade, y: max_y});
           self.$activeShade.on(ANIMATION_END_EVENTS, function() {
-            self.$activeShade.off(ANIMATION_END_EVENTS);
+            self.$activeShade.removeClass('landing').off(ANIMATION_END_EVENTS);
             self.checkCombine(self.curLane, function () {
               self.transformShade();
             });
           });
 
-          self.$activeShade.css({
-            'transform': 'translate3d(' + x + 'px, ' + max_y + 'px, 0)',
-            '-webkit-transform': 'translate3d(' + x + 'px, ' + max_y + 'px, 0)'
-          });
+          self.$activeShade
+            .addClass('landing')
+            .css({
+              'transform': 'translate3d(0, ' + max_y + 'px, 0)',
+              '-webkit-transform': 'translate3d(0, ' + max_y + 'px, 0)'
+            });
         }
       })();
     };
@@ -263,18 +261,18 @@ $(function() {
       }, 100);
     };
 
-    this.combine = function (lane, c, len, cb) {
+    this.combine = function (lane, color, len, cb) {
       var self = this,
           height = SHADE_HEIGHT * 2 - 1,
           bottom = AD_HEIGHT + (len === 2 ? 0 : ((len - 2) * SHADE_HEIGHT - 1));
       this.$combinedShade = $('<div />')
-        .addClass('shade-combine color-' + c + ' lane-' + lane)
+        .addClass('shade-combine color-' + color + ' lane-' + lane)
         .css({
           height: height + 'px',
           bottom: bottom + 'px'
         }).on(ANIMATION_END_EVENTS, function() {
           self.$combinedShade.off(ANIMATION_END_EVENTS);
-          self.update(lane, c + 1, len);
+          self.update(lane, color + 1, len);
           self.checkCombine(lane, cb);
         });
 
@@ -283,8 +281,8 @@ $(function() {
       setTimeout(function () {
         $('.del').remove();
         self.$combinedShade
-          .removeClass('color-' + c)
-          .addClass('color-' + (c + 1))
+          .removeClass('color-' + color)
+          .addClass('color-' + (color + 1))
           .css({height: SHADE_HEIGHT + 'px'});
         }, 100);
     };
@@ -342,8 +340,8 @@ $(function() {
               sc[j].shade.css({
                 'transition-duration': '0.15s',
                 '-webkit-transition-duration': '0.15s',
-                'transform': 'translate3d(' + sc[j].x + 'px, ' + sc[j].y + 'px, 0)',
-                '-webkit-transform': 'translate3d(' + sc[j].x + 'px, ' + sc[j].y + 'px, 0)'
+                'transform': 'translate3d(0, ' + sc[j].y + 'px, 0)',
+                '-webkit-transform': 'translate3d(0, ' + sc[j].y + 'px, 0)'
               });
             }
             for (j = 0; j < 4; j++) {
@@ -361,16 +359,16 @@ $(function() {
               '-webkit-transition-duration': '0.15s',
               'transition-timing-function': 'ease',
               '-webkit-transition-timing-function': 'ease',
-              'transform': 'translate3d(' + sc[j].x + 'px, ' + (sc[j].y - CLEAR_INC) + 'px, 0)',
-              '-webkit-transform': 'translate3d(' + sc[j].x + 'px, ' + (sc[j].y - CLEAR_INC) + 'px, 0)'
+              'transform': 'translate3d(0, ' + (sc[j].y - CLEAR_INC) + 'px, 0)',
+              '-webkit-transform': 'translate3d(0, ' + (sc[j].y - CLEAR_INC) + 'px, 0)'
             });
           }
           for (j = 0; j < 4; j++) {
             s[j].shade.css({
               'transition': 'height 0.15s ease',
               '-webkit-transition': 'height 0.15s ease',
-              'transform': 'translate3d(' + s[j].x + 'px, 0 , 0)',
-              '-webkit-transform': 'translate3d(' + s[j].x + 'px, 0, 0)',
+              'transform': 'translate3d(0, 0 , 0)',
+              '-webkit-transform': 'translate3d(0, 0, 0)',
               'height': SHADE_HEIGHT + CLEAR_INC - 1 + 'px',
               'top': 'auto',
               'bottom': this.getBottom(i)
@@ -383,36 +381,33 @@ $(function() {
     };
 
     this.update = function (lane, color, len) {
-      var x = this.getX(lane),
-          max_y = this.getY(len - 2),
+      var max_y = this.getY(len - 2),
           newShade = $('<div />')
-            .addClass('shade color-' + color)
+            .addClass('shade color-' + color + ' lane-' + lane)
             .attr('data-color', color)
             .css({
-              'transform': 'translate3d(' + x + 'px, ' + max_y + 'px, 0)',
-              '-webkit-transform': 'translate3d(' + x + 'px, ' + max_y + 'px, 0)',
+              'transform': 'translate3d(0, ' + max_y + 'px, 0)',
+              '-webkit-transform': 'translate3d(0, ' + max_y + 'px, 0)',
             });
       this.$game.append(newShade);
       this.$combinedShade.remove();
 
-      this.lanes[this.curLane].splice(len - 2, 2, {shade: newShade, x: x, y: max_y});
+      this.lanes[this.curLane].splice(len - 2, 2, {shade: newShade, y: max_y});
       this.shades[color - 1] -= 2;
       this.shades[color] ++;
     };
 
     this.createShade = function (lane, color, position) {
-      var x = this.getX(lane),
-          y = this.getY(position),
+      var y = this.getY(position),
           shade = $('<div />')
-          .addClass('shade color-' + color)
+          .addClass('shade lane-' + lane + ' color-' + color)
           .attr('data-color', color)
           .css({
-            'transform': 'translate3d(' + x + 'px, ' + y + 'px, 0)',
-            '-webkit-transform': 'translate3d(' + x + 'px, ' + y + 'px, 0)',
+            'transform': 'translate3d(0, ' + y + 'px, 0)',
+            '-webkit-transform': 'translate3d(0, ' + y + 'px, 0)',
           }), s;
       s = {
         shade: shade,
-        x: x,
         y: y
       };
       this.shades[color] ++;
@@ -431,14 +426,13 @@ $(function() {
 
     this.moveTo = function (lane) {
       this.curLane = lane;
+      this.$activeShade
+        .removeClass('lane-0 lane-1 lane-2 lane-3')
+        .addClass('lane-' + lane);
     };
 
     this.getY = function (len) {
       return len === 0 ? MAX_Y : MAX_Y - len * SHADE_HEIGHT + 1;
-    };
-
-    this.getX = function (lane) {
-      return lane * (GAME_WIDTH / 4);
     };
 
     this.getBottom = function (len) {

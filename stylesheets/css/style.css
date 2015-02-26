@@ -10,9 +10,10 @@ body { margin: 0; font-family: 'Poiret One', Helvetica, Georgia; -webkit-touch-c
 .lane:active, .lane.active { background-color: rgba(255, 255, 255, 0.15); }
 .lane.fade { -webkit-transition: background-color 0.5s ease; transition: background-color 0.5s ease; }
 
-.shade { width: 25%; position: absolute; top: 0; -webkit-transition: -webkit-transform 50ms linear; transition: transform 50ms linear; }
+.shade { width: 25%; position: absolute; top: 0; left: 0; -webkit-transition: -webkit-transform 10s linear; transition: transform 10s linear; }
+.shade.landing { -webkit-transition: -webkit-transform 50ms linear; transition: transform 50ms linear; }
 .shade.prepare-1 { -webkit-transition: width 1s ease-in-out, left 1s ease-in-out; transition: width 1s ease-in-out, left 1s ease-in-out; }
-.shade.prepare-2 { -webkit-transition: height 0.3s ease-in-out; transition: height 0.3s ease-in-out; }
+.shade.prepare-2 { -webkit-transition: height 0.3s linear; transition: height 0.3s linear; }
 .shade.welcome { -webkit-transition: -webkit-transform 0.8s linear; transition: transform 0.8s linear; }
 
 .shade-combine { width: 25%; position: absolute; -webkit-transition: background-color 0.35s ease, height 0.35s ease; transition: background-color 0.35s ease, height 0.35s ease; }
