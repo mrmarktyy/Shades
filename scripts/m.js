@@ -97,6 +97,7 @@ $(function() {
       this.lanes = [[], [], [], []];
       this.shades = [0, 0, 0, 0, 0];
       this.curLane = 0;
+      this.falling = false;
       this.theme = 1;
     };
 
@@ -155,6 +156,7 @@ $(function() {
 
     this.transformShade = function () {
       var self = this;
+      this.falling = false;
       this.curLane = this.$prepareShade.data('lane');
       this.$prepareShade.on(ANIMATION_END_EVENTS, function (event) {
         if (event.propertyName === 'width') {
@@ -192,6 +194,7 @@ $(function() {
           '-webkit-transform': 'translate3d(0, ' + y + 'px, 0)',
         });
       this.locked = false;
+      this.falling = true;
 
       setTimeout(function () {
         self.prepareShade();
@@ -412,10 +415,12 @@ $(function() {
     };
 
     this.moveTo = function (lane) {
-      this.curLane = lane;
-      this.$activeShade
-        .removeClass('lane-0 lane-1 lane-2 lane-3')
-        .addClass('lane-' + lane);
+      if (this.falling) {
+        this.curLane = lane;
+        this.$activeShade
+          .removeClass('lane-0 lane-1 lane-2 lane-3')
+          .addClass('lane-' + lane);
+      }
     };
 
     this.getY = function (len) {
