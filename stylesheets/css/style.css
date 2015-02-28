@@ -32,6 +32,8 @@ body { margin: 0; font-family: 'Poiret One', Helvetica, Georgia; -webkit-touch-c
 .theme-1 .color-3 { background-color: #4b964b; }
 .theme-1 .color-4 { background-color: #295229; }
 
+.hidden { position: absolute; bottom: 0; visibility: hidden; }
+
 .ads { position: absolute; padding: 0; margin: 0; border: none; bottom: 0; height: 60px; width: 100%; color: white; background-color: rgba(0, 0, 0, 0.5); text-align: center; }
 
 @media only screen and (min-device-width: 320px) and (max-device-width: 480px) and (orientation: landscape) { body { -webkit-transform-origin: 0% 0%; transform-origin: 0% 0%; -webkit-transform: rotate(90deg); transform: rotate(90deg); position: absolute; left: 100%; } }

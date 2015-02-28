@@ -71,6 +71,7 @@ $(function() {
         height: BG_HEIGHT + 'px'
       });
       this.$gametitle = $('.game-title');
+      this.$hidden = $('.hidden');
     };
 
     this.injectStylesheet = function () {
@@ -199,6 +200,8 @@ $(function() {
         var len = self.lanes[self.curLane].length,
             y = self.$activeShade[0].getBoundingClientRect().top,
             max_y = self.getY(len);
+
+        self.$hidden.text(y);
         if (max_y - y <= LOCK_Y) {
           self.locked = true;
         }

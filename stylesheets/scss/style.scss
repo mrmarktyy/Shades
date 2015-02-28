@@ -101,6 +101,12 @@ body {
   .color-4 { background-color: darken($green, 60%); }
 }
 
+.hidden {
+  position: absolute;
+  bottom: 0;
+  visibility: hidden;
+}
+
 .ads {
   position: absolute;
   padding: 0;
