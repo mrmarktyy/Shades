@@ -45,7 +45,6 @@ $(function() {
     var ANIMATION_END_EVENTS = 'webkitTransitionEnd transitionend animationend webkitAnimationEnd';
 
     var SHADE_HEIGHT = Math.ceil(BASE_SHADE_HEIGHT * HEIGHT_RATIO);
-    var INC = 3;
     var LOCK_Y = 10;
     var CLEAR_INC = 10;
     var AD_HEIGHT = 60;
@@ -55,6 +54,7 @@ $(function() {
 
     this.init = function () {
       this.initVars();
+      this.injectStylesheet();
       this.bindEvents();
       this.reset();
     };
@@ -71,6 +71,9 @@ $(function() {
         height: BG_HEIGHT + 'px'
       });
       this.$gametitle = $('.game-title');
+    };
+
+    this.injectStylesheet = function () {
       var style = document.createElement('style');
       style.type = 'text/css';
       style.innerHTML = '.shade { height: ' + SHADE_HEIGHT + 'px; }';
@@ -87,38 +90,30 @@ $(function() {
       });
     };
 
+    this.reset = function () {
+      $('.shade').remove();
+      this.$lanes.removeClass('active');
+      this.lanes = [[], [], [], []];
+      this.shades = [0, 0, 0, 0, 0];
+      this.curLane = 0;
+      this.theme = 1;
+    };
+
     this.welcome = function () {
       var self = this;
-      $('.shade').remove();
       $('.lane-2').addClass('active fade');
       this.$gametitle.removeClass('out');
-      this.curLane = 2;
 
-      this.createShade(0, 4, 0);
-      this.createShade(1, 4, 0);
-      this.createShade(2, 3, 0);
-      this.createShade(3, 4, 0);
-      this.createShade(2, 2, 1);
-      this.createShade(2, 1, 2);
-      this.createShade(2, 0, 3);
+      this.createShade({lane: 0, color: 4, position: 0});
+      this.createShade({lane: 1, color: 4, position: 0});
+      this.createShade({lane: 2, color: 3, position: 0});
+      this.createShade({lane: 3, color: 4, position: 0});
+      this.createShade({lane: 2, color: 2, position: 1});
+      this.createShade({lane: 2, color: 1, position: 2});
+      this.createShade({lane: 2, color: 0, position: 3});
 
-      var lane = this.curLane;
-      var color = 0;
-      var position = 4;
-      var y = this.getY(position);
-      var moving = {
-        shade: $('<div />')
-          .addClass('shade welcome color-' + color + ' lane-' + lane)
-          .attr('data-color', color)
-          .css({
-            'transform': 'translate3d(0, 0, 0)',
-            '-webkit-transform': 'translate3d(0, 0, 0)'
-          }),
-        y: y
-      };
-      this.$game.append(moving.shade);
-      this.lanes[lane].push(moving);
-      this.shades[lane] ++;
+      var moving = this.createShade({lane: this.curLane, color: 0, position: 4, y: 0, class: 'welcome'});
+      var y = this.getY(4);
 
       setTimeout(function () {
         moving.shade.on(ANIMATION_END_EVENTS, function() {
@@ -126,6 +121,7 @@ $(function() {
           self.checkCombine(self.curLane, function () {
             $('.lane-2').removeClass('active');
             self.$gametitle.addClass('out');
+            // FIXME: launch menu;
           });
         });
         moving.shade.css({
@@ -135,17 +131,10 @@ $(function() {
       }, 100);
     };
 
-    this.reset = function () {
-      this.lanes = [[], [], [], []];
-      this.shades = [0, 0, 0, 0, 0];
-      this.curLane = 0;
-      this.theme = 1;
-    };
-
     this.start = function () {
-      this.welcome();
-      // this.prepareShade();
-      // this.transformShade();
+      // this.welcome();
+      this.prepareShade();
+      this.transformShade();
     };
 
     this.prepareShade = function () {
@@ -166,35 +155,28 @@ $(function() {
     this.transformShade = function () {
       var self = this;
       this.curLane = this.$prepareShade.data('lane');
-      this.$prepareShade.on(ANIMATION_END_EVENTS, function() {
-        self.$prepareShade.on(ANIMATION_END_EVENTS, function () {
-          self.$prepareShade.on(ANIMATION_END_EVENTS, function () {
-            self.$prepareShade.off(ANIMATION_END_EVENTS);
-            self.$prepareShade.removeClass('prepare-2');
-            self.$activeShade = self.$prepareShade;
-            console.log('fall');
-            self.fall();
-          });
-          // get ready
-          self.$prepareShade.css({
-            'height': '',
-            'left': '',
-            'transform': 'translate3d(0, 0, 0)',
-            '-webkit-transform': 'translate3d(0, 0, 0)'
-          });
-        });
-        // height => SHADE_HEIGHT
-        self.$prepareShade
-          .css({
-            'width': '',
-            'height': SHADE_HEIGHT + 'px'
-          }).removeClass('prepare-1').addClass('prepare-2');
+      this.$prepareShade.on(ANIMATION_END_EVENTS, function (event) {
+        if (event.propertyName === 'width') {
+          // height => SHADE_HEIGHT
+          self.$prepareShade
+            .removeClass('prepare-1').addClass('prepare-2')
+            .css({'height': ''});
+        } else if (event.propertyName === 'height') {
+          self.$prepareShade
+            .removeClass('prepare-2')
+            .off(ANIMATION_END_EVENTS);
+          self.$activeShade = self.$prepareShade;
+          self.fall();
+        }
       });
       // width => 25%
       setTimeout(function () {
         self.$prepareShade
           .addClass('lane-' + self.curLane)
-          .css({'width': '25%'});
+          .css({
+            'width': '',
+            'height': INIT_SHADE_HEIGHT + 'px'
+          });
       }, 100);
     };
 
@@ -397,23 +379,25 @@ $(function() {
       this.shades[color] ++;
     };
 
-    this.createShade = function (lane, color, position) {
-      var y = this.getY(position),
-          shade = $('<div />')
-          .addClass('shade lane-' + lane + ' color-' + color)
-          .attr('data-color', color)
+    this.createShade = function (options /* lane,color,position,y,class */) {
+      var y = options.y !== void 0 ? options.y : this.getY(options.position);
+      var shade = $('<div />')
+          .addClass('shade lane-' + options.lane + ' color-' + options.color)
+          .addClass(options.class)
+          .attr('data-color', options.color)
           .css({
             'transform': 'translate3d(0, ' + y + 'px, 0)',
             '-webkit-transform': 'translate3d(0, ' + y + 'px, 0)',
-          }), s;
-      s = {
+          });
+      var composite = {
         shade: shade,
         y: y
       };
-      this.shades[color] ++;
-      this.lanes[lane][position] = s;
+      this.curLane = options.lane;
+      this.shades[options.color] ++;
+      this.lanes[options.lane][options.position] = composite;
       this.$game.append(shade);
-      return s;
+      return composite;
     };
 
     this.randomColor = function () {
