@@ -71,7 +71,9 @@ $(function() {
         height: BG_HEIGHT + 'px'
       });
       this.$gametitle = $('.game-title');
+      this.$livescore = $('.live-score');
       this.$hidden = $('.hidden');
+      this.best = localStorage.getItem('best') || 0;
     };
 
     this.injectStylesheet = function () {
@@ -94,17 +96,34 @@ $(function() {
     this.reset = function () {
       $('.shade').remove();
       this.$lanes.removeClass('active');
+      this.$livescore.hide();
+      this.$gametitle.hide();
       this.lanes = [[], [], [], []];
       this.shades = [0, 0, 0, 0, 0];
       this.curLane = 0;
+      this.score = 0;
+      this.updateScore(0);
       this.falling = false;
       this.theme = 1;
+    };
+
+    this.start = function () {
+      // this.welcome();
+      this.preBegin();
+    };
+
+    this.preBegin = function () {
+      this.$gametitle.hide();
+      this.$livescore.show();
+
+      this.prepareShade();
+      this.transformShade();
     };
 
     this.welcome = function () {
       var self = this;
       $('.lane-2').addClass('active fade');
-      this.$gametitle.removeClass('out');
+      this.$gametitle.show().removeClass('out');
 
       this.createShade({lane: 0, color: 4, position: 0});
       this.createShade({lane: 1, color: 4, position: 0});
@@ -131,12 +150,6 @@ $(function() {
           '-webkit-transform': 'translate3d(0, ' + y + 'px, 0)'
         });
       }, 100);
-    };
-
-    this.start = function () {
-      // this.welcome();
-      this.prepareShade();
-      this.transformShade();
     };
 
     this.prepareShade = function () {
@@ -185,15 +198,16 @@ $(function() {
 
     this.fall = function () {
       var self = this,
+          color = this.$activeShade.data('color'),
           y = 1500;
 
-      this.shades[this.$activeShade.data('color')] ++;
+      this.shades[color] ++;
       this.$activeShade
         .css({
           'transform': 'translate3d(0, ' + y + 'px, 0)',
           '-webkit-transform': 'translate3d(0, ' + y + 'px, 0)',
         });
-      this.locked = false;
+      this.looping = true;
       this.falling = true;
 
       setTimeout(function () {
@@ -206,14 +220,15 @@ $(function() {
 
         self.$hidden.text(y);
         if (max_y - y <= LOCK_Y) {
-          self.locked = true;
+          self.looping = false;
         }
-        if (!self.locked) {
+        if (self.looping) {
           window.requestAnimationFrame(loop);
         } else {
           self.lanes[self.curLane].push({shade: self.$activeShade, y: max_y});
           self.$activeShade.on(ANIMATION_END_EVENTS, function() {
             self.$activeShade.removeClass('landing').off(ANIMATION_END_EVENTS);
+            self.updateScore(2);
             self.checkCombine(self.curLane, function () {
               self.transformShade();
             });
@@ -260,7 +275,8 @@ $(function() {
           bottom: bottom + 'px'
         }).on(ANIMATION_END_EVENTS, function() {
           self.$combinedShade.off(ANIMATION_END_EVENTS);
-          self.update(lane, color + 1, len);
+          self.updateScore(2 * (color + 1));
+          self.replaceCombine(lane, color + 1, len);
           self.checkCombine(lane, cb);
         });
 
@@ -323,6 +339,7 @@ $(function() {
               cb();
             });
             // go down
+            self.updateScore(4 * (color + 1));
             for (j = 0; j < iterator; j++) {
               sc[j].y = sc[j].y + (SHADE_HEIGHT - 1);
               sc[j].shade.css({
@@ -368,7 +385,7 @@ $(function() {
       cb();
     };
 
-    this.update = function (lane, color, len) {
+    this.replaceCombine = function (lane, color, len) {
       var max_y = this.getY(len - 2),
           newShade = $('<div />')
             .addClass('shade color-' + color + ' lane-' + lane)
@@ -383,6 +400,15 @@ $(function() {
       this.lanes[this.curLane].splice(len - 2, 2, {shade: newShade, y: max_y});
       this.shades[color - 1] -= 2;
       this.shades[color] ++;
+    };
+
+    this.updateScore = function (inc) {
+      this.score += inc;
+      if (this.score > this.best) {
+        this.best = this.score;
+        localStorage.setItem('best', this.best);
+      }
+      this.$livescore.text(this.score);
     };
 
     this.createShade = function (options /* lane,color,position,y,class */) {

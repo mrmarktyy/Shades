@@ -18,6 +18,8 @@ body { margin: 0; font-family: 'Poiret One', Helvetica, Georgia; -webkit-touch-c
 
 .shade-combine { width: 25%; position: absolute; -webkit-transition: background-color 0.3s ease, height 0.3s ease; transition: background-color 0.3s ease, height 0.3s ease; }
 
+.live-score { display: none; background-color: transparent !important; text-align: center; left: 0; right: 0; top: 15px; position: absolute; }
+
 .lane-0 { left: 0; }
 
 .lane-1 { left: 25%; }
@@ -26,11 +28,11 @@ body { margin: 0; font-family: 'Poiret One', Helvetica, Georgia; -webkit-touch-c
 
 .lane-3 { left: 75%; }
 
-.theme-1 .color-0 { background-color: #c9e4c9; }
-.theme-1 .color-1 { background-color: #a7d3a7; }
-.theme-1 .color-2 { background-color: #74ba74; }
-.theme-1 .color-3 { background-color: #4b964b; }
-.theme-1 .color-4 { background-color: #295229; }
+.theme-1 .color-0 { background-color: #c9e4c9; color: #c9e4c9; }
+.theme-1 .color-1 { background-color: #a7d3a7; color: #a7d3a7; }
+.theme-1 .color-2 { background-color: #74ba74; color: #74ba74; }
+.theme-1 .color-3 { background-color: #4b964b; color: #4b964b; }
+.theme-1 .color-4 { background-color: #295229; color: #295229; }
 
 .hidden { position: absolute; bottom: 0; visibility: hidden; }
 

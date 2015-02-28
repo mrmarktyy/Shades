@@ -18,7 +18,6 @@ body {
   position: relative;
   overflow: hidden;
   background: #666;
-
   // width: 320px;
   // height: 480px;
 }
@@ -88,17 +87,27 @@ body {
           transition: background-color 0.3s ease, height 0.3s ease;
 }
 
+.live-score {
+  display: none;
+  background-color: transparent !important;
+  text-align: center;
+  left: 0;
+  right: 0;
+  top: 15px;
+  position: absolute;
+}
+
 .lane-0 { left: 0;  }
 .lane-1 { left: 25%; }
 .lane-2 { left: 50%; }
 .lane-3 { left: 75%; }
 
 .theme-1 {
-  .color-0 { background-color: $green; }
-  .color-1 { background-color: darken($green, 10%); }
-  .color-2 { background-color: darken($green, 25%); }
-  .color-3 { background-color: darken($green, 40%); }
-  .color-4 { background-color: darken($green, 60%); }
+  .color-0 { background-color: $green; color: $green; }
+  .color-1 { background-color: darken($green, 10%); color: darken($green, 10%) }
+  .color-2 { background-color: darken($green, 25%); color: darken($green, 25%) }
+  .color-3 { background-color: darken($green, 40%); color: darken($green, 40%) }
+  .color-4 { background-color: darken($green, 60%); color: darken($green, 60%) }
 }
 
 .hidden {
