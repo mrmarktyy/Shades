@@ -540,8 +540,7 @@ $(function() {
       var self = this;
       $('.btn-begin.up .content').on(ANIMATION_END_EVENTS, function () {
         $('.btn-begin.up .content').off(ANIMATION_END_EVENTS);
-
-        self.theme = theme === undefined ? self.theme + 1 : theme;
+        self.theme = theme === undefined ? (parseInt(self.theme, 10) + 1) : theme;
         if (self.theme > MAX_THEME) {
           self.theme = 0;
         }
