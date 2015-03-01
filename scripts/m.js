@@ -75,9 +75,13 @@ $(function() {
       this.$bg = $('.bg').css({
         height: BG_HEIGHT + 'px'
       });
+      this.$menu = $('.menu').css({
+        height: BG_HEIGHT + 'px'
+      });
       this.$lanes = $('.lane').css({
         height: BG_HEIGHT + 'px'
       });
+      this.$lane2 = $('.lane-2');
       this.$share = $('.share');
       this.$gametitle = $('.game-title');
       this.$livescore = $('.live-score');
@@ -106,6 +110,9 @@ $(function() {
       $('.lane').on('mousedown touchstart mouseup touchend', function (e) {
         self.moveTo($(e.target).data('lane'));
       });
+      $('.btn-begin').on(CLICK_EVENT, function () {
+        self.preBegin();
+      });
       $('.btn-playagain').on(CLICK_EVENT, function () {
         self.reset();
         self.menu();
@@ -126,6 +133,7 @@ $(function() {
     this.reset = function () {
       $('.shade').remove();
       this.$lanes.removeClass('active');
+      this.$menu.hide();
       this.$livescore.hide();
       this.$gametitle.hide();
       this.$gameoverUp.hide().removeClass('in');
@@ -141,12 +149,11 @@ $(function() {
     };
 
     this.start = function () {
-      // this.welcome();
-      this.preBegin();
+      this.welcome();
     };
 
     this.preBegin = function () {
-      this.$gametitle.hide();
+      this.$menu.hide();
       this.$livescore.show();
 
       this.prepareShade();
@@ -155,7 +162,7 @@ $(function() {
 
     this.welcome = function () {
       var self = this;
-      $('.lane-2').addClass('active fade');
+      this.$lane2.addClass('active fade');
       this.$gametitle.show().removeClass('out');
 
       this.createShade({lane: 0, color: 4, position: 0});
@@ -173,9 +180,12 @@ $(function() {
         moving.shade.on(ANIMATION_END_EVENTS, function() {
           moving.shade.off(ANIMATION_END_EVENTS);
           self.checkCombine(self.curLane, function () {
-            $('.lane-2').removeClass('active');
+            self.$gametitle.on(ANIMATION_END_EVENTS, function () {
+              self.$gametitle.off(ANIMATION_END_EVENTS);
+              self.menu();
+            });
+            self.$lane2.removeClass('active');
             self.$gametitle.addClass('out');
-            // FIXME: launch menu;
           });
         });
         moving.shade.css({
@@ -186,7 +196,11 @@ $(function() {
     };
 
     this.menu = function () {
+      this.$menu.show();
 
+      setTimeout(function () {
+        $('.btn-begin .content').addClass('in');
+      }, 100);
     };
 
     this.dead = function () {
