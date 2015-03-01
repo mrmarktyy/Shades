@@ -44,6 +44,10 @@ $(function() {
     var BASE_SHADE_HEIGHT = 36;
     var ANIMATION_END_EVENTS = 'webkitTransitionEnd transitionend animationend webkitAnimationEnd';
     var SHADE_HEIGHT = Math.ceil(BASE_SHADE_HEIGHT * HEIGHT_RATIO);
+    var IS_WECHAT = !!navigator.userAgent.match(/MicroMessenger/);
+    // https://github.com/Modernizr/Modernizr/blob/master/feature-detects/touchevents.js#L40
+    var IS_TOUCH = !!(('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch);
+    var CLICK_EVENT = IS_TOUCH ? 'touchstart' : 'click';
     var SPEED = {
       NORMAL: 1500,
       FAST: 1000
@@ -74,10 +78,20 @@ $(function() {
       this.$lanes = $('.lane').css({
         height: BG_HEIGHT + 'px'
       });
+      this.$share = $('.share');
       this.$gametitle = $('.game-title');
       this.$livescore = $('.live-score');
+      this.$score = $('.score span');
+      this.$best = $('.best span');
+      this.$gameoverUp = $('.gameover-up').css({
+        height: (GAME_HEIGHT / 2) + 'px'
+      });
+      this.$gameoverDown = $('.gameover-down').css({
+        height: (GAME_HEIGHT / 2) + 'px'
+      });
       this.$hidden = $('.hidden');
       this.best = localStorage.getItem('best') || 0;
+      this.$best.text(this.best);
     };
 
     this.injectStylesheet = function () {
@@ -92,6 +106,18 @@ $(function() {
       $('.lane').on('mousedown touchstart mouseup touchend', function (e) {
         self.moveTo($(e.target).data('lane'));
       });
+      $('.btn-playagain').on(CLICK_EVENT, function () {
+        self.reset();
+        self.menu();
+      });
+      $('.btn-share').on(CLICK_EVENT, function(e) {
+        self.$share.show();
+        e.stopPropagation();
+        $(document).on(CLICK_EVENT, '.overlay', function() {
+          $(document).off(CLICK_EVENT, '.overlay');
+          self.$share.hide();
+        });
+      });
       $(document).on('mousedown touchstart', function(e) {
         e.preventDefault();
       });
@@ -102,13 +128,16 @@ $(function() {
       this.$lanes.removeClass('active');
       this.$livescore.hide();
       this.$gametitle.hide();
+      this.$gameoverUp.hide().removeClass('in');
+      this.$gameoverDown.hide().removeClass('in');
       this.lanes = [[], [], [], []];
       this.shades = [0, 0, 0, 0, 0];
       this.curLane = 0;
       this.score = 0;
-      this.updateScore(0);
       this.falling = false;
       this.theme = 1;
+
+      this.updateScore(0);
     };
 
     this.start = function () {
@@ -156,12 +185,27 @@ $(function() {
       }, 100);
     };
 
+    this.menu = function () {
+
+    };
+
+    this.dead = function () {
+      var self = this;
+      this.$gameoverUp.show();
+      this.$gameoverDown.show();
+
+      setTimeout(function () {
+        self.$gameoverUp.addClass('in');
+        self.$gameoverDown.addClass('in');
+      });
+    };
+
     this.prepareShade = function () {
       var color = this.randomColor();
       var lane = this.randomLane();
 
       this.$prepareShade = $('<div />')
-        .addClass('shade prepare-1 color-' + color)
+        .addClass('shade prepare-1 bg-' + color)
         .attr('data-lane', lane).attr('data-color', color)
         .css({
           'width': '100%',
@@ -233,7 +277,8 @@ $(function() {
             self.$activeShade.removeClass('landing').off(ANIMATION_END_EVENTS);
             self.updateScore(2);
             self.checkCombine(self.curLane, function () {
-              self.afterCombine();
+              // self.afterCombine();
+              self.dead();
             });
           });
 
@@ -272,7 +317,7 @@ $(function() {
           height = SHADE_HEIGHT * 2 - 1,
           bottom = AD_HEIGHT + (len === 2 ? 0 : ((len - 2) * SHADE_HEIGHT - 1));
       this.$combinedShade = $('<div />')
-        .addClass('shade-combine color-' + color + ' lane-' + lane)
+        .addClass('shade-combine bg-' + color + ' lane-' + lane)
         .css({
           height: height + 'px',
           bottom: bottom + 'px'
@@ -288,8 +333,8 @@ $(function() {
       setTimeout(function () {
         $('.del').remove();
         self.$combinedShade
-          .removeClass('color-' + color)
-          .addClass('color-' + (color + 1))
+          .removeClass('bg-' + color)
+          .addClass('bg-' + (color + 1))
           .css({height: SHADE_HEIGHT + 'px'});
         }, 100);
     };
@@ -297,7 +342,7 @@ $(function() {
     this.replaceCombine = function (lane, color, len) {
       var max_y = this.getY(len - 2),
           newShade = $('<div />')
-            .addClass('shade color-' + color + ' lane-' + lane)
+            .addClass('shade bg-' + color + ' lane-' + lane)
             .attr('data-color', color)
             .css({
               'transform': 'translate3d(0, ' + max_y + 'px, 0)',
@@ -313,7 +358,7 @@ $(function() {
 
     this.afterCombine = function () {
       if (this.checkDeath()) {
-        // FIXME: Death UI
+        this.dead();
       } else {
         this.transformShade();
       }
@@ -426,14 +471,16 @@ $(function() {
       if (this.score > this.best) {
         this.best = this.score;
         localStorage.setItem('best', this.best);
+        this.$best.text(this.best);
       }
       this.$livescore.text(this.score);
+      this.$score.text(this.score);
     };
 
     this.createShade = function (options /* lane,color,position,y,class */) {
       var y = options.y !== void 0 ? options.y : this.getY(options.position);
       var shade = $('<div />')
-          .addClass('shade lane-' + options.lane + ' color-' + options.color)
+          .addClass('shade lane-' + options.lane + ' bg-' + options.color)
           .addClass(options.class)
           .attr('data-color', options.color)
           .css({
