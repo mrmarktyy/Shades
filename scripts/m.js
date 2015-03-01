@@ -57,6 +57,8 @@ $(function() {
     var AD_HEIGHT = 60;
     var INIT_SHADE_HEIGHT = 10;
     var MAX_SHADES = 11;
+    var MAX_THEME = 4;
+    var ALL_THEME_CLASS = 'theme-0 theme-1 theme-2 theme-3 theme-4';
     var BG_HEIGHT = GAME_HEIGHT - AD_HEIGHT;
     var MAX_Y = BG_HEIGHT - SHADE_HEIGHT;
 
@@ -68,10 +70,11 @@ $(function() {
     };
 
     this.initVars = function () {
+      this.theme = localStorage.getItem('theme') || 0;
       this.$game = $('#game').css({
         width: GAME_WIDTH + 'px',
         height: GAME_HEIGHT + 'px'
-      });
+      }).addClass('theme-' + this.theme);
       this.$bg = $('.bg').css({
         height: BG_HEIGHT + 'px'
       });
@@ -111,11 +114,21 @@ $(function() {
         self.moveTo($(e.target).data('lane'));
       });
       $('.btn-begin').on(CLICK_EVENT, function () {
-        self.preBegin();
+        self.begin();
       });
       $('.btn-playagain').on(CLICK_EVENT, function () {
-        self.reset();
-        self.menu();
+        self.$gameoverUp.on(ANIMATION_END_EVENTS, function () {
+          self.$gameoverUp.off(ANIMATION_END_EVENTS);
+          self.reset();
+          self.menu();
+        });
+
+        $('.shade').remove();
+        self.$gameoverUp.removeClass('in');
+        self.$gameoverDown.removeClass('in');
+      });
+      $('.btn-theme').on(CLICK_EVENT, function () {
+        self.updateTheme();
       });
       $('.btn-share').on(CLICK_EVENT, function(e) {
         self.$share.show();
@@ -131,37 +144,43 @@ $(function() {
     };
 
     this.reset = function () {
-      $('.shade').remove();
       this.$lanes.removeClass('active');
       this.$menu.hide();
       this.$livescore.hide();
       this.$gametitle.hide();
-      this.$gameoverUp.hide().removeClass('in');
-      this.$gameoverDown.hide().removeClass('in');
+      this.$gameoverUp.hide();
+      this.$gameoverDown.hide();
       this.lanes = [[], [], [], []];
       this.shades = [0, 0, 0, 0, 0];
       this.curLane = 0;
       this.score = 0;
       this.falling = false;
-      this.theme = 1;
-
-      this.updateScore(0);
     };
 
     this.start = function () {
       this.welcome();
     };
 
-    this.preBegin = function () {
-      this.$menu.hide();
-      this.$livescore.show();
+    this.begin = function () {
+      var self = this;
 
-      this.prepareShade();
-      this.transformShade();
+      $('.btn-begin.up .content').on(ANIMATION_END_EVENTS, function () {
+        $('.btn-begin.up .content').off(ANIMATION_END_EVENTS);
+        self.$menu.hide();
+
+        self.$livescore.show();
+        self.prepareShade();
+        self.transformShade();
+      });
+
+      this.score = 0;
+      this.updateScore(0);
+      $('.btn-begin .content').removeClass('in');
     };
 
     this.welcome = function () {
       var self = this;
+      this.tmpBest = this.best;
       this.$lane2.addClass('active fade');
       this.$gametitle.show().removeClass('out');
 
@@ -182,6 +201,11 @@ $(function() {
           self.checkCombine(self.curLane, function () {
             self.$gametitle.on(ANIMATION_END_EVENTS, function () {
               self.$gametitle.off(ANIMATION_END_EVENTS);
+              if (self.best > self.tmpBest) {
+                self.best = self.tmpBest;
+                self.$best.text(self.best);
+                localStorage.setItem('best', self.best);
+              }
               self.menu();
             });
             self.$lane2.removeClass('active');
@@ -510,6 +534,18 @@ $(function() {
       this.lanes[options.lane][options.position] = composite;
       this.$game.append(shade);
       return composite;
+    };
+
+    this.updateTheme = function () {
+      // FIXME: Add animation
+      this.theme ++;
+      if (this.theme > MAX_THEME) {
+        this.theme = 0;
+      }
+      localStorage.setItem('theme', this.theme);
+      this.$game
+        .removeClass(ALL_THEME_CLASS)
+        .addClass('theme-' + this.theme);
     };
 
     this.randomColor = function () {

@@ -1,0 +1,70 @@
+$green: #c9e4c9;
+$yellow: #ffff99;
+$red: #ffb2b2;
+$blue: #add5f0;
+$purple: #e1cde9;
+
+.theme-0 {
+  .bg-0 { background-color: $green; }
+  .bg-1 { background-color: darken($green, 10%); }
+  .bg-2 { background-color: darken($green, 25%); }
+  .bg-3 { background-color: darken($green, 40%); }
+  .bg-4 { background-color: darken($green, 60%); }
+  .color-0 { color: $green; }
+  .color-1 { color: darken($green, 10%) }
+  .color-2 { color: darken($green, 25%) }
+  .color-3 { color: darken($green, 40%) }
+  .color-4 { color: darken($green, 60%) }
+}
+
+.theme-1 {
+  .bg-0 { background-color: $yellow; }
+  .bg-1 { background-color: darken($yellow, 10%); }
+  .bg-2 { background-color: darken($yellow, 25%); }
+  .bg-3 { background-color: darken($yellow, 40%); }
+  .bg-4 { background-color: darken($yellow, 60%); }
+  .color-0 { color: $yellow; }
+  .color-1 { color: darken($yellow, 10%) }
+  .color-2 { color: darken($yellow, 25%) }
+  .color-3 { color: darken($yellow, 40%) }
+  .color-4 { color: darken($yellow, 60%) }
+}
+
+.theme-2 {
+  .bg-0 { background-color: $red; }
+  .bg-1 { background-color: darken($red, 10%); }
+  .bg-2 { background-color: darken($red, 25%); }
+  .bg-3 { background-color: darken($red, 40%); }
+  .bg-4 { background-color: darken($red, 60%); }
+  .color-0 { color: $red; }
+  .color-1 { color: darken($red, 10%) }
+  .color-2 { color: darken($red, 25%) }
+  .color-3 { color: darken($red, 40%) }
+  .color-4 { color: darken($red, 60%) }
+}
+
+.theme-3 {
+  .bg-0 { background-color: $blue; }
+  .bg-1 { background-color: darken($blue, 10%); }
+  .bg-2 { background-color: darken($blue, 25%); }
+  .bg-3 { background-color: darken($blue, 40%); }
+  .bg-4 { background-color: darken($blue, 60%); }
+  .color-0 { color: $blue; }
+  .color-1 { color: darken($blue, 10%) }
+  .color-2 { color: darken($blue, 25%) }
+  .color-3 { color: darken($blue, 40%) }
+  .color-4 { color: darken($blue, 60%) }
+}
+
+.theme-4 {
+  .bg-0 { background-color: $purple; }
+  .bg-1 { background-color: darken($purple, 10%); }
+  .bg-2 { background-color: darken($purple, 25%); }
+  .bg-3 { background-color: darken($purple, 40%); }
+  .bg-4 { background-color: darken($purple, 60%); }
+  .color-0 { color: $purple; }
+  .color-1 { color: darken($purple, 10%) }
+  .color-2 { color: darken($purple, 25%) }
+  .color-3 { color: darken($purple, 40%) }
+  .color-4 { color: darken($purple, 60%) }
+}
