@@ -315,8 +315,7 @@ $(function() {
             self.$activeShade.removeClass('landing').off(ANIMATION_END_EVENTS);
             self.updateScore(2);
             self.checkCombine(self.curLane, function () {
-              // self.afterCombine();
-              self.dead();
+              self.afterCombine();
             });
           });
 
