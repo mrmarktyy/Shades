@@ -43,12 +43,16 @@ $(function() {
     var HEIGHT_RATIO = GAME_HEIGHT / GAME_DEFAULT_HEIGHT;
     var BASE_SHADE_HEIGHT = 36;
     var ANIMATION_END_EVENTS = 'webkitTransitionEnd transitionend animationend webkitAnimationEnd';
-
     var SHADE_HEIGHT = Math.ceil(BASE_SHADE_HEIGHT * HEIGHT_RATIO);
-    var LOCK_Y = 10;
+    var SPEED = {
+      NORMAL: 1500,
+      FAST: 1000
+    };
+    var GAP = 10;
     var CLEAR_INC = 10;
     var AD_HEIGHT = 60;
     var INIT_SHADE_HEIGHT = 10;
+    var MAX_SHADES = 11;
     var BG_HEIGHT = GAME_HEIGHT - AD_HEIGHT;
     var MAX_Y = BG_HEIGHT - SHADE_HEIGHT;
 
@@ -85,11 +89,11 @@ $(function() {
 
     this.bindEvents = function () {
       var self = this;
-      $('.lane').on('mousedown touchstart mouseup touchend', function (event) {
-        self.moveTo($(event.target).data('lane'));
+      $('.lane').on('mousedown touchstart mouseup touchend', function (e) {
+        self.moveTo($(e.target).data('lane'));
       });
-      $(document).on('mousedown touchstart', function(event) {
-        event.preventDefault();
+      $(document).on('mousedown touchstart', function(e) {
+        e.preventDefault();
       });
     };
 
@@ -182,6 +186,7 @@ $(function() {
             .removeClass('prepare-2')
             .off(ANIMATION_END_EVENTS);
           self.$activeShade = self.$prepareShade;
+          self.$prepareShade = null;
           self.fall();
         }
       });
@@ -198,28 +203,26 @@ $(function() {
 
     this.fall = function () {
       var self = this,
-          color = this.$activeShade.data('color'),
-          y = 1500;
+          color = this.$activeShade.data('color');
 
       this.shades[color] ++;
-      this.$activeShade
-        .css({
-          'transform': 'translate3d(0, ' + y + 'px, 0)',
-          '-webkit-transform': 'translate3d(0, ' + y + 'px, 0)',
-        });
+      this.$activeShade.css({
+        'transform': 'translate3d(0, ' + SPEED.NORMAL + 'px, 0)',
+        '-webkit-transform': 'translate3d(0, ' + SPEED.NORMAL + 'px, 0)',
+      });
       this.looping = true;
       this.falling = true;
 
       setTimeout(function () {
         self.prepareShade();
-      }, 1000);
+      }, 100);
       (function loop () {
         var len = self.lanes[self.curLane].length,
             y = self.$activeShade[0].getBoundingClientRect().top,
             max_y = self.getY(len);
 
         self.$hidden.text(y);
-        if (max_y - y <= LOCK_Y) {
+        if (max_y - y <= GAP) {
           self.looping = false;
         }
         if (self.looping) {
@@ -230,7 +233,7 @@ $(function() {
             self.$activeShade.removeClass('landing').off(ANIMATION_END_EVENTS);
             self.updateScore(2);
             self.checkCombine(self.curLane, function () {
-              self.transformShade();
+              self.afterCombine();
             });
           });
 
@@ -291,6 +294,39 @@ $(function() {
         }, 100);
     };
 
+    this.replaceCombine = function (lane, color, len) {
+      var max_y = this.getY(len - 2),
+          newShade = $('<div />')
+            .addClass('shade color-' + color + ' lane-' + lane)
+            .attr('data-color', color)
+            .css({
+              'transform': 'translate3d(0, ' + max_y + 'px, 0)',
+              '-webkit-transform': 'translate3d(0, ' + max_y + 'px, 0)',
+            });
+      this.$game.append(newShade);
+      this.$combinedShade.remove();
+
+      this.lanes[this.curLane].splice(len - 2, 2, {shade: newShade, y: max_y});
+      this.shades[color - 1] -= 2;
+      this.shades[color] ++;
+    };
+
+    this.afterCombine = function () {
+      if (this.checkDeath()) {
+        // FIXME: Death UI
+      } else {
+        this.transformShade();
+      }
+    };
+
+    this.checkDeath = function () {
+      if (this.lanes[0].length > MAX_SHADES || this.lanes[1].length > MAX_SHADES ||
+        this.lanes[2].length > MAX_SHADES || this.lanes[3].length > MAX_SHADES) {
+        return true;
+      }
+      return false;
+    };
+
     this.checkClear = function (cb) {
       var self = this,
           min = Math.min(
@@ -331,6 +367,7 @@ $(function() {
               for (j = 0; j < 4; j++) {
                 s[j].shade.remove();
               }
+              self.updateScore(4 * (color + 1));
               self.shades[color] -= 4;
               self.lanes[0].splice(i, 1);
               self.lanes[1].splice(i, 1);
@@ -339,7 +376,6 @@ $(function() {
               cb();
             });
             // go down
-            self.updateScore(4 * (color + 1));
             for (j = 0; j < iterator; j++) {
               sc[j].y = sc[j].y + (SHADE_HEIGHT - 1);
               sc[j].shade.css({
@@ -383,23 +419,6 @@ $(function() {
         }
       }
       cb();
-    };
-
-    this.replaceCombine = function (lane, color, len) {
-      var max_y = this.getY(len - 2),
-          newShade = $('<div />')
-            .addClass('shade color-' + color + ' lane-' + lane)
-            .attr('data-color', color)
-            .css({
-              'transform': 'translate3d(0, ' + max_y + 'px, 0)',
-              '-webkit-transform': 'translate3d(0, ' + max_y + 'px, 0)',
-            });
-      this.$game.append(newShade);
-      this.$combinedShade.remove();
-
-      this.lanes[this.curLane].splice(len - 2, 2, {shade: newShade, y: max_y});
-      this.shades[color - 1] -= 2;
-      this.shades[color] ++;
     };
 
     this.updateScore = function (inc) {
