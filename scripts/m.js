@@ -537,15 +537,22 @@ $(function() {
     };
 
     this.updateTheme = function (theme) {
-      // FIXME: Add animation
-      this.theme = theme === void 0 ? this.theme + 1 : theme;
-      if (this.theme > MAX_THEME) {
-        this.theme = 0;
-      }
-      localStorage.setItem('theme', this.theme);
-      this.$game
-        .removeClass(ALL_THEME_CLASS)
-        .addClass('theme-' + this.theme);
+      var self = this;
+      $('.btn-begin.up .content').on(ANIMATION_END_EVENTS, function () {
+        $('.btn-begin.up .content').off(ANIMATION_END_EVENTS);
+
+        self.theme = theme === undefined ? self.theme + 1 : theme;
+        if (self.theme > MAX_THEME) {
+          self.theme = 0;
+        }
+        localStorage.setItem('theme', self.theme);
+        self.$game
+          .removeClass(ALL_THEME_CLASS)
+          .addClass('theme-' + self.theme);
+        $('.btn-begin .content').addClass('in');
+      });
+
+      $('.btn-begin .content').removeClass('in');
     };
 
     this.randomColor = function () {
