@@ -70,11 +70,10 @@ $(function() {
     };
 
     this.initVars = function () {
-      this.theme = localStorage.getItem('theme') || 0;
       this.$game = $('#game').css({
         width: GAME_WIDTH + 'px',
         height: GAME_HEIGHT + 'px'
-      }).addClass('theme-' + this.theme);
+      });
       this.$bg = $('.bg').css({
         height: BG_HEIGHT + 'px'
       });
@@ -98,6 +97,7 @@ $(function() {
       });
       this.$hidden = $('.hidden');
       this.best = localStorage.getItem('best') || 0;
+      this.theme = localStorage.getItem('theme') || 0;
       this.$best.text(this.best);
     };
 
@@ -206,6 +206,7 @@ $(function() {
                 self.$best.text(self.best);
                 localStorage.setItem('best', self.best);
               }
+              self.updateTheme(self.theme);
               self.menu();
             });
             self.$lane2.removeClass('active');
@@ -535,9 +536,9 @@ $(function() {
       return composite;
     };
 
-    this.updateTheme = function () {
+    this.updateTheme = function (theme) {
       // FIXME: Add animation
-      this.theme ++;
+      this.theme = theme === void 0 ? this.theme + 1 : theme;
       if (this.theme > MAX_THEME) {
         this.theme = 0;
       }
