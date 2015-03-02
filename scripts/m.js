@@ -169,8 +169,9 @@ $(function() {
         self.$menu.hide();
 
         self.$livescore.show();
-        self.prepareShade();
-        self.transformShade();
+        self.prepareShade(function () {
+          self.transformShade();
+        });
       });
 
       this.score = 0;
@@ -239,12 +240,13 @@ $(function() {
       });
     };
 
-    this.prepareShade = function () {
+    this.prepareShade = function (cb) {
+      var self = this;
       var color = this.randomColor();
       var lane = this.randomLane();
 
       this.$prepareShade = $('<div />')
-        .addClass('shade prepare-1 bg-' + color)
+        .addClass('shade prepare-0 bg-' + color)
         .attr('data-lane', lane).attr('data-color', color)
         .css({
           'width': '100%',
@@ -252,6 +254,18 @@ $(function() {
         });
 
       this.$game.append(this.$prepareShade);
+
+      this.$prepareShade.on(ANIMATION_END_EVENTS, function () {
+        self.$prepareShade
+          .removeClass('prepare-0').addClass('prepare-1')
+          .off(ANIMATION_END_EVENTS);
+        if (cb) {
+          cb();
+        }
+      });
+      setTimeout(function () {
+        self.$prepareShade.css({'opacity': 1});
+      }, 100);
     };
 
     this.transformShade = function () {
