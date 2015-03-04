@@ -241,7 +241,7 @@ $(function() {
           'transform': 'translate3d(0, ' + y + 'px, 0)',
           '-webkit-transform': 'translate3d(0, ' + y + 'px, 0)'
         });
-      }, 100);
+      }, 500);
     };
 
     this.menu = function () {
