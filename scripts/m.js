@@ -112,7 +112,9 @@ $(function() {
       var self = this;
       $('.lane').on('mousedown touchstart', function (e) {
         if (self.falling) {
-          if (e.touches) e = e.touches[0];
+          if (e.touches) {
+            e = e.touches[0];
+          }
           self.pressed = true;
           self.offsetY = e.offsetY || e.clientY;
           self.moveTo($(e.target).data('lane'));
@@ -120,7 +122,9 @@ $(function() {
       });
       $('.lane').on('mousemove touchmove', function (e) {
         if (self.falling && self.pressed) {
-          if (e.touches) e = e.touches[0];
+          if (e.touches) {
+            e = e.touches[0];
+          }
           if ((e.offsetY || e.clientY) - self.offsetY > 50) {
             self.speedUp();
           }
@@ -172,6 +176,7 @@ $(function() {
       this.curLane = 0;
       this.score = 0;
       this.falling = false;
+      this.offsetY = null;
     };
 
     this.start = function () {
@@ -219,13 +224,12 @@ $(function() {
           self.checkCombine(self.curLane, function () {
             self.$gametitle.on(ANIMATION_END_EVENTS, function () {
               self.$gametitle.off(ANIMATION_END_EVENTS);
+              // Revert theme and best
               self.$game
                 .removeClass(ALL_THEME_CLASS)
                 .addClass('theme-' + self.theme);
               if (self.best > self.tmpBest) {
-                self.best = self.tmpBest;
-                self.$best.text(self.best);
-                localStorage.setItem('best', self.best);
+                self.updateBest(self.tmpBest);
               }
               self.menu();
             });
@@ -541,12 +545,16 @@ $(function() {
     this.updateScore = function (inc) {
       this.score += inc;
       if (this.score > this.best) {
-        this.best = this.score;
-        localStorage.setItem('best', this.best);
-        this.$best.text(this.best);
+        this.updateBest(this.score);
       }
       this.$livescore.text(this.score);
       this.$score.text(this.score);
+    };
+
+    this.updateBest = function (best) {
+      this.best = best;
+      localStorage.setItem('best', this.best);
+      this.$best.text(this.best);
     };
 
     this.createShade = function (options /* lane,color,position,y,class */) {
