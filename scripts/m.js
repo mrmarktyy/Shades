@@ -604,7 +604,15 @@ $(function() {
     };
 
     this.randomColor = function () {
-      return this._random(0, 1);
+      var index = -1;
+      for (var i = 0; i < 5; i++) {
+        if (this.shades[i] !== 0) {
+          index = i;
+        }
+      }
+      var possibles = index + 1;
+      possibles = possibles > 4 ? 4 : possibles;
+      return this._random(0, possibles);
     };
 
     this.randomLane = function () {
