@@ -1,70 +1,108 @@
-$green: #c9e4c9;
-$yellow: #ffff99;
-$red: #ffb2b2;
-$blue: #add5f0;
-$purple: #e1cde9;
-
+// http://www.google.com/design/spec/style/color.html#color-color-palette
+$green0: #C8E6C9;
+$green1: #81C784;
+$green2: #4CAF50;
+$green3: #388E3C;
+$green4: #1B5E20;
 .theme-0 {
-  .bg-0 { background-color: $green; }
-  .bg-1 { background-color: darken($green, 10%); }
-  .bg-2 { background-color: darken($green, 25%); }
-  .bg-3 { background-color: darken($green, 40%); }
-  .bg-4 { background-color: darken($green, 60%); }
-  .color-0 { color: $green; }
-  .color-1 { color: darken($green, 10%) }
-  .color-2 { color: darken($green, 25%) }
-  .color-3 { color: darken($green, 40%) }
-  .color-4 { color: darken($green, 60%) }
+  .bg-0 { background-color: $green0; }
+  .bg-1 { background-color: $green1; }
+  .bg-2 { background-color: $green2; }
+  .bg-3 { background-color: $green3; }
+  .bg-4 { background-color: $green4; }
+  .color-0 { color: $green0; }
+  .color-1 { color: $green1; }
+  .color-2 { color: $green2; }
+  .color-3 { color: $green3; }
+  .color-4 { color: $green4; }
 }
 
+$yellow0: #F0F4C3;
+$yellow1: #DCE775;
+$yellow2: #CDDC39;
+$yellow3: #AFB42B;
+$yellow4: #827717;
 .theme-1 {
-  .bg-0 { background-color: $yellow; }
-  .bg-1 { background-color: darken($yellow, 10%); }
-  .bg-2 { background-color: darken($yellow, 25%); }
-  .bg-3 { background-color: darken($yellow, 40%); }
-  .bg-4 { background-color: darken($yellow, 60%); }
-  .color-0 { color: $yellow; }
-  .color-1 { color: darken($yellow, 10%) }
-  .color-2 { color: darken($yellow, 25%) }
-  .color-3 { color: darken($yellow, 40%) }
-  .color-4 { color: darken($yellow, 60%) }
+  .bg-0 { background-color: $yellow0; }
+  .bg-1 { background-color: $yellow1; }
+  .bg-2 { background-color: $yellow2; }
+  .bg-3 { background-color: $yellow3; }
+  .bg-4 { background-color: $yellow4; }
+  .color-0 { color: $yellow0; }
+  .color-1 { color: $yellow1; }
+  .color-2 { color: $yellow2; }
+  .color-3 { color: $yellow3; }
+  .color-4 { color: $yellow4; }
 }
 
+$red0: #FFCDD2;
+$red1: #E57373;
+$red2: #F44336;
+$red3: #D32F2F;
+$red4: #B71C1C;
 .theme-2 {
-  .bg-0 { background-color: $red; }
-  .bg-1 { background-color: darken($red, 10%); }
-  .bg-2 { background-color: darken($red, 25%); }
-  .bg-3 { background-color: darken($red, 40%); }
-  .bg-4 { background-color: darken($red, 60%); }
-  .color-0 { color: $red; }
-  .color-1 { color: darken($red, 10%) }
-  .color-2 { color: darken($red, 25%) }
-  .color-3 { color: darken($red, 40%) }
-  .color-4 { color: darken($red, 60%) }
+  .bg-0 { background-color: $red0; }
+  .bg-1 { background-color: $red1; }
+  .bg-2 { background-color: $red2; }
+  .bg-3 { background-color: $red3; }
+  .bg-4 { background-color: $red4; }
+  .color-0 { color: $red0; }
+  .color-1 { color: $red1; }
+  .color-2 { color: $red2; }
+  .color-3 { color: $red3; }
+  .color-4 { color: $red4; }
 }
 
+$blue0: #C5CAE9;
+$blue1: #7986CB;
+$blue2: #3F51B5;
+$blue3: #303F9F;
+$blue4: #1A237E;
 .theme-3 {
-  .bg-0 { background-color: $blue; }
-  .bg-1 { background-color: darken($blue, 10%); }
-  .bg-2 { background-color: darken($blue, 25%); }
-  .bg-3 { background-color: darken($blue, 40%); }
-  .bg-4 { background-color: darken($blue, 60%); }
-  .color-0 { color: $blue; }
-  .color-1 { color: darken($blue, 10%) }
-  .color-2 { color: darken($blue, 25%) }
-  .color-3 { color: darken($blue, 40%) }
-  .color-4 { color: darken($blue, 60%) }
+  .bg-0 { background-color: $blue0; }
+  .bg-1 { background-color: $blue1; }
+  .bg-2 { background-color: $blue2; }
+  .bg-3 { background-color: $blue3; }
+  .bg-4 { background-color: $blue4; }
+  .color-0 { color: $blue0; }
+  .color-1 { color: $blue1; }
+  .color-2 { color: $blue2; }
+  .color-3 { color: $blue3; }
+  .color-4 { color: $blue4; }
 }
 
+$purple0: #E1BEE7;
+$purple1: #BA68C8;
+$purple2: #9C27B0;
+$purple3: #7B1FA2;
+$purple4: darken($purple3, 20%);
 .theme-4 {
-  .bg-0 { background-color: $purple; }
-  .bg-1 { background-color: darken($purple, 10%); }
-  .bg-2 { background-color: darken($purple, 25%); }
-  .bg-3 { background-color: darken($purple, 40%); }
-  .bg-4 { background-color: darken($purple, 60%); }
-  .color-0 { color: $purple; }
-  .color-1 { color: darken($purple, 10%) }
-  .color-2 { color: darken($purple, 25%) }
-  .color-3 { color: darken($purple, 40%) }
-  .color-4 { color: darken($purple, 60%) }
+  .bg-0 { background-color: $purple0; }
+  .bg-1 { background-color: $purple1; }
+  .bg-2 { background-color: $purple2; }
+  .bg-3 { background-color: $purple3; }
+  .bg-4 { background-color: $purple4; }
+  .color-0 { color: $purple0; }
+  .color-1 { color: $purple1; }
+  .color-2 { color: $purple2; }
+  .color-3 { color: $purple3; }
+  .color-4 { color: $purple4; }
+}
+
+$orange0: #FFCCBC;
+$orange1: #FF8A65;
+$orange2: #FF5722;
+$orange3: #E64A19;
+$orange4: #BF360C;
+.theme-5 {
+  .bg-0 { background-color: $orange0; }
+  .bg-1 { background-color: $orange1; }
+  .bg-2 { background-color: $orange2; }
+  .bg-3 { background-color: $orange3; }
+  .bg-4 { background-color: $orange4; }
+  .color-0 { color: $orange0; }
+  .color-1 { color: $orange1; }
+  .color-2 { color: $orange2; }
+  .color-3 { color: $orange3; }
+  .color-4 { color: $orange4; }
 }

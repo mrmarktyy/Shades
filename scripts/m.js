@@ -57,8 +57,8 @@ $(function() {
     var AD_HEIGHT = 60;
     var INIT_SHADE_HEIGHT = 10;
     var MAX_SHADES = 11;
-    var MAX_THEME = 4;
-    var ALL_THEME_CLASS = 'theme-0 theme-1 theme-2 theme-3 theme-4';
+    var MAX_THEME = 5;
+    var ALL_THEME_CLASS = 'theme-0 theme-1 theme-2 theme-3 theme-4 theme-5';
     var BG_HEIGHT = GAME_HEIGHT - AD_HEIGHT;
     var MAX_Y = BG_HEIGHT - SHADE_HEIGHT;
 
