@@ -50,7 +50,7 @@ $(function() {
     var CLICK_EVENT = IS_TOUCH ? 'touchstart' : 'click';
     var SPEED = {
       NORMAL: 1500,
-      FAST: 1000
+      FAST: 4000
     };
     var GAP = 10;
     var CLEAR_INC = 10;
@@ -110,8 +110,25 @@ $(function() {
 
     this.bindEvents = function () {
       var self = this;
-      $('.lane').on('mousedown touchstart mouseup touchend', function (e) {
-        self.moveTo($(e.target).data('lane'));
+      $('.lane').on('mousedown touchstart', function (e) {
+        if (self.falling) {
+          if (e.touches) e = e.touches[0];
+          self.pressed = true;
+          self.offsetY = e.offsetY || e.clientY;
+          self.moveTo($(e.target).data('lane'));
+        }
+      });
+      $('.lane').on('mousemove touchmove', function (e) {
+        if (self.falling && self.pressed) {
+          if (e.touches) e = e.touches[0];
+          if ((e.offsetY || e.clientY) - self.offsetY > 50) {
+            self.speedUp();
+          }
+        }
+      });
+      $('.lane').on('mouseup touchend', function () {
+        self.pressed = false;
+        self.offsetY = null;
       });
       $('.btn-begin').on(CLICK_EVENT, function () {
         self.begin();
@@ -202,12 +219,14 @@ $(function() {
           self.checkCombine(self.curLane, function () {
             self.$gametitle.on(ANIMATION_END_EVENTS, function () {
               self.$gametitle.off(ANIMATION_END_EVENTS);
+              self.$game
+                .removeClass(ALL_THEME_CLASS)
+                .addClass('theme-' + self.theme);
               if (self.best > self.tmpBest) {
                 self.best = self.tmpBest;
                 self.$best.text(self.best);
                 localStorage.setItem('best', self.best);
               }
-              self.updateTheme(self.theme);
               self.menu();
             });
             self.$lane2.removeClass('active');
@@ -270,7 +289,6 @@ $(function() {
 
     this.transformShade = function () {
       var self = this;
-      this.falling = false;
       this.curLane = this.$prepareShade.data('lane');
       this.$prepareShade.on(ANIMATION_END_EVENTS, function (event) {
         if (event.propertyName === 'width') {
@@ -279,6 +297,7 @@ $(function() {
             .removeClass('prepare-1').addClass('prepare-2')
             .css({'height': ''});
         } else if (event.propertyName === 'height') {
+          // fall
           self.$prepareShade
             .removeClass('prepare-2')
             .off(ANIMATION_END_EVENTS);
@@ -325,6 +344,7 @@ $(function() {
         if (self.looping) {
           window.requestAnimationFrame(loop);
         } else {
+          self.falling = false;
           self.lanes[self.curLane].push({shade: self.$activeShade, y: max_y});
           self.$activeShade.on(ANIMATION_END_EVENTS, function() {
             self.$activeShade.removeClass('landing').off(ANIMATION_END_EVENTS);
@@ -566,6 +586,13 @@ $(function() {
       });
 
       $('.btn-begin .content').removeClass('in');
+    };
+
+    this.speedUp = function () {
+      this.$activeShade.css({
+        'transform': 'translate3d(0, ' + SPEED.FAST + 'px, 0)',
+        '-webkit-transform': 'translate3d(0, ' + SPEED.FAST + 'px, 0)',
+      });
     };
 
     this.randomColor = function () {
