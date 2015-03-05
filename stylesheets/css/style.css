@@ -94,7 +94,7 @@ body { margin: 0; font-family: 'Poiret One', Helvetica, Georgia; -webkit-touch-c
 
 .shade-combine { width: 25%; position: absolute; -webkit-transition: background-color 0.3s ease, height 0.3s ease; transition: background-color 0.3s ease, height 0.3s ease; }
 
-.live-score { display: none; background-color: transparent !important; text-align: center; left: 0; right: 0; top: 15px; position: absolute; }
+.live-score { display: none; background-color: transparent !important; text-align: center; left: 0; right: 0; top: 15px; position: absolute; font-size: 22px; z-index: 11; }
 
 .score, .best { position: absolute; color: white; width: 100%; height: 40px; line-height: 40px; text-align: center; font-size: 16px; }
 
