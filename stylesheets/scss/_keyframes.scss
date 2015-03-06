@@ -9,3 +9,15 @@
   50% { transform: translate3d(0, 15px, 0); }
   100% { transform: translate3d(0, 0, 0); }
 }
+
+/* countdown */
+@-webkit-keyframes countdown {
+  0% { -webkit-transform: translate3d(0, -50%, 0) scaleY(1); }
+  20% { -webkit-transform: translate3d(0, -50%, 0) scaleY(1.2); }
+  40% { -webkit-transform: translate3d(0, -50%, 0) scaleY(1); }
+}
+@keyframes countdown {
+  0% { transform: translate3d(0, -50%, 0) scaleY(1); }
+  20% { transform: translate3d(0, -50%, 0) scaleY(1.2); }
+  40% { transform: translate3d(0, -50%, 0) scaleY(1); }
+}

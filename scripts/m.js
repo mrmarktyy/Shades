@@ -80,6 +80,9 @@ $(function() {
       this.$menu = $('.menu').css({
         height: BG_HEIGHT + 'px'
       });
+      this.$pause = $('.pause').css({
+        height: BG_HEIGHT + 'px'
+      });
       this.$lanes = $('.lane').css({
         height: BG_HEIGHT + 'px'
       });
@@ -87,6 +90,8 @@ $(function() {
       this.$share = $('.share');
       this.$gametitle = $('.game-title');
       this.$livescore = $('.live-score');
+      this.$btnpause = $('.btn-pause');
+      this.$countdown = $('.countdown');
       this.$score = $('.score span');
       this.$best = $('.best span');
       this.$gameoverUp = $('.gameover-up').css({
@@ -159,6 +164,18 @@ $(function() {
           self.$share.hide();
         });
       });
+      this.$btnpause.on(CLICK_EVENT, function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+        if (self.falling) {
+          self.pause();
+        }
+      });
+      $('.btn-continue').on(CLICK_EVENT, function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+        self.continue();
+      });
       $(document).on('mousedown touchstart', function(e) {
         e.preventDefault();
       });
@@ -167,7 +184,10 @@ $(function() {
     this.reset = function () {
       this.$lanes.removeClass('active');
       this.$menu.hide();
+      this.$pause.hide();
+      this.$countdown.hide();
       this.$livescore.hide();
+      this.$btnpause.hide();
       this.$gametitle.hide();
       this.$gameoverUp.hide();
       this.$gameoverDown.hide();
@@ -178,6 +198,7 @@ $(function() {
       this.falling = false;
       this.prepareReady = false;
       this.offsetY = null;
+      this.paused = false;
     };
 
     this.start = function () {
@@ -192,6 +213,7 @@ $(function() {
         self.$menu.hide();
 
         self.$livescore.show();
+        self.$btnpause.show();
         self.prepareShade();
         self.transformShade();
       });
@@ -263,6 +285,60 @@ $(function() {
       }, 100);
     };
 
+    this.pause = function () {
+      this.paused = true;
+      var top = this.$activeShade[0].getBoundingClientRect().top;
+      this.$activeShade.css({
+        'transform': 'translate3d(0, ' + top + 'px, 0)',
+        '-webkit-transform': 'translate3d(0, ' + top + 'px, 0)'
+      });
+      this.$btnpause.hide();
+      this.$pause.show();
+      $('.shade').addClass('blur');
+
+      setTimeout(function () {
+        $('.btn-continue .content').addClass('in');
+      }, 100);
+    };
+
+    this.continue = function () {
+      var self = this;
+      this.paused = false;
+
+      $('.btn-continue.up .content').on(ANIMATION_END_EVENTS, function () {
+        $('.btn-continue.up .content').off(ANIMATION_END_EVENTS);
+        self.$pause.hide();
+        self.countdown(3, function () {
+          self.$btnpause.show();
+          self.$countdown.hide();
+          $('.shade').removeClass('blur');
+          self.fall(true);
+        });
+      });
+
+      $('.btn-continue .content').removeClass('in');
+    };
+
+    this.countdown = function (number, cb) {
+      var self = this;
+      this.$countdown.find('div').text(number);
+      this.$countdown.on(ANIMATION_END_EVENTS, function () {
+        self.$countdown
+          .removeClass('ing')
+          .off(ANIMATION_END_EVENTS);
+        number --;
+        if (number !== 0) {
+          self.countdown(number, cb);
+        } else {
+          cb();
+        }
+      }).show();
+
+      setTimeout(function () {
+        self.$countdown.addClass('ing');
+      }, 100);
+    };
+
     this.prepareShade = function (cb) {
       var self = this;
       var color = this.randomColor();
@@ -330,14 +406,22 @@ $(function() {
       }, 100);
     };
 
-    this.fall = function () {
-      var self = this,
-          color = this.$activeShade.data('color');
+    this.fall = function (isContinue) {
+      var self = this;
+      if (isContinue) {
+        var top = this.$activeShade[0].getBoundingClientRect().top;
+        this.$activeShade.css({
+          'transform': 'translate3d(0, ' + (top + SPEED.NORMAL) + 'px, 0)',
+          '-webkit-transform': 'translate3d(0, ' + (top + SPEED.NORMAL) + 'px, 0)'
+        });
+        loop();
+        return;
+      }
 
-      this.shades[color] ++;
+      this.shades[this.$activeShade.data('color')] ++;
       this.$activeShade.css({
         'transform': 'translate3d(0, ' + SPEED.NORMAL + 'px, 0)',
-        '-webkit-transform': 'translate3d(0, ' + SPEED.NORMAL + 'px, 0)',
+        '-webkit-transform': 'translate3d(0, ' + SPEED.NORMAL + 'px, 0)'
       });
       this.looping = true;
       this.falling = true;
@@ -345,7 +429,7 @@ $(function() {
       setTimeout(function () {
         self.prepareShade();
       }, 100);
-      (function loop () {
+      function loop () {
         var len = self.lanes[self.curLane].length,
             y = self.$activeShade[0].getBoundingClientRect().top,
             max_y = self.getY(len);
@@ -355,7 +439,9 @@ $(function() {
           self.looping = false;
         }
         if (self.looping) {
-          window.requestAnimationFrame(loop);
+          if (!self.paused) {
+            window.requestAnimationFrame(loop);
+          }
         } else {
           self.falling = false;
           self.lanes[self.curLane].push({shade: self.$activeShade, y: max_y});
@@ -376,7 +462,8 @@ $(function() {
               '-webkit-transform': 'translate3d(0, ' + max_y + 'px, 0)'
             });
         }
-      })();
+      }
+      loop();
     };
 
     this.checkCombine = function (lane, cb) {
@@ -664,7 +751,6 @@ $(function() {
     options.height = viewportHeight;
   }
 
-  window.game = new Game(options);
-  window.game.start();
+  new Game(options).start();
 
 });

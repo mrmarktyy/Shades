@@ -72,6 +72,13 @@
 @keyframes arrow { 0% { transform: translate3d(0, 0, 0); }
   50% { transform: translate3d(0, 15px, 0); }
   100% { transform: translate3d(0, 0, 0); } }
+/* countdown */
+@-webkit-keyframes countdown { 0% { -webkit-transform: translate3d(0, -50%, 0) scaleY(1); }
+  20% { -webkit-transform: translate3d(0, -50%, 0) scaleY(1.2); }
+  40% { -webkit-transform: translate3d(0, -50%, 0) scaleY(1); } }
+@keyframes countdown { 0% { transform: translate3d(0, -50%, 0) scaleY(1); }
+  20% { transform: translate3d(0, -50%, 0) scaleY(1.2); }
+  40% { transform: translate3d(0, -50%, 0) scaleY(1); } }
 body { margin: 0; font-family: 'Poiret One', Helvetica, Georgia; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
 
 .overlay { position: absolute; top: 0; bottom: 0; left: 0; right: 0; z-index: 1000; }
@@ -87,6 +94,7 @@ body { margin: 0; font-family: 'Poiret One', Helvetica, Georgia; -webkit-touch-c
 
 .shade { width: 25%; position: absolute; top: 0; left: 0; opacity: 1; -webkit-transition: -webkit-transform 10s linear; transition: transform 10s linear; }
 .shade.landing { -webkit-transition: -webkit-transform 50ms linear; transition: transform 50ms linear; }
+.shade.blur { -webkit-filter: blur(4px); filter: blur(4px); }
 .shade.prepare-0 { opacity: 0; -webkit-transition: opacity 0.5s linear; transition: opacity 0.5s linear; }
 .shade.prepare-1 { -webkit-transition: width 1s ease-in-out, left 1s ease-in-out; transition: width 1s ease-in-out, left 1s ease-in-out; }
 .shade.prepare-2 { -webkit-transition: height 0.3s linear; transition: height 0.3s linear; }
@@ -102,25 +110,32 @@ body { margin: 0; font-family: 'Poiret One', Helvetica, Georgia; -webkit-touch-c
 
 .best { top: 0; }
 
-.menu { display: none; width: 100%; top: 0; position: absolute; }
-.menu .best { font-size: 14px; bottom: 0; top: auto; background-color: #555; }
+.menu, .pause { display: none; width: 100%; top: 0; position: absolute; z-index: 11; }
+.menu .best, .pause .best { font-size: 14px; bottom: 0; top: auto; background-color: #555; }
 
-.btn-begin { cursor: pointer; width: 60%; left: 20%; height: 100px; overflow: hidden; position: absolute; }
-.btn-begin .content { height: 100px; width: 100%; left: 0; position: absolute; -webkit-transition: -webkit-transform 0.5s ease-in-out; transition: transform 0.5s ease-in-out; }
-.btn-begin p { font-size: 20px; width: 100%; text-align: center; margin: 0; }
-.btn-begin.up { top: calc(35% - 100px); }
-.btn-begin.up .content { bottom: -100px; }
-.btn-begin.up .content.in { -webkit-transform: translate3d(0, -100px, 0); transform: translate3d(0, -100px, 0); }
-.btn-begin.up p { bottom: 0; position: absolute; }
-.btn-begin.down { top: 35%; }
-.btn-begin.down .content { top: -100px; }
-.btn-begin.down .content.in { -webkit-transform: translate3d(0, 100px, 0); transform: translate3d(0, 100px, 0); }
+.btn-large { cursor: pointer; width: 60%; left: 20%; height: 100px; overflow: hidden; position: absolute; }
+.btn-large .content { height: 100px; width: 100%; left: 0; position: absolute; -webkit-transition: -webkit-transform 0.5s ease-in-out; transition: transform 0.5s ease-in-out; }
+.btn-large p { font-size: 20px; width: 100%; text-align: center; margin: 0; }
+.btn-large.up { top: calc(35% - 100px); }
+.btn-large.up .content { bottom: -100px; }
+.btn-large.up .content.in { -webkit-transform: translate3d(0, -100px, 0); transform: translate3d(0, -100px, 0); }
+.btn-large.up p { bottom: 0; position: absolute; }
+.btn-large.down { top: 35%; }
+.btn-large.down .content { top: -100px; }
+.btn-large.down .content.in { -webkit-transform: translate3d(0, 100px, 0); transform: translate3d(0, 100px, 0); }
 
 .btn-theme, .btn-tutorial { font-size: 14px; top: calc(35% + 100px + 30px); cursor: pointer; position: absolute; }
 
 .btn-theme { left: 25%; }
 
 .btn-tutorial { left: 60%; }
+
+.btn-pause { cursor: pointer; width: 20px; height: 18px; right: 15px; top: 17px; position: absolute; z-index: 11; }
+.btn-pause .bar { width: 6px; height: 100%; display: inline-block; }
+
+.countdown { width: 100%; height: 50px; background-color: rgba(0, 0, 0, 0.3); top: 50%; -webkit-transform: translate3d(0, -50%, 0); transform: translate3d(0, -50%, 0); position: absolute; }
+.countdown.ing { -webkit-animation: countdown 1s linear; animation: countdown 1s linear; }
+.countdown > div { color: white; text-align: center; font-size: 18px; line-height: 50px; }
 
 .gameover-up, .gameover-down { display: none; position: absolute; width: 100%; -webkit-transition: -webkit-transform 0.5s ease-in-out; transition: transform 0.5s ease-in-out; z-index: 10; }
 
