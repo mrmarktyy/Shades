@@ -153,6 +153,8 @@ body { margin: 0; font-family: 'Poiret One', Helvetica, Georgia; -webkit-touch-c
 
 .btn-playagain { top: 45%; }
 
+.btn-more { top: 65%; }
+
 .lane-0 { left: 0; }
 
 .lane-1 { left: 25%; }

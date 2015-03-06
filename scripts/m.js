@@ -43,6 +43,7 @@ $(function() {
     var HEIGHT_RATIO = GAME_HEIGHT / GAME_DEFAULT_HEIGHT;
     var BASE_SHADE_HEIGHT = 36;
     var ANIMATION_END_EVENTS = 'webkitTransitionEnd transitionend animationend webkitAnimationEnd';
+    var MORE_URL = 'http://www.yoocc.com/';
     var SHADE_HEIGHT = Math.ceil(BASE_SHADE_HEIGHT * HEIGHT_RATIO);
     var IS_WECHAT = !!navigator.userAgent.match(/MicroMessenger/);
     // https://github.com/Modernizr/Modernizr/blob/master/feature-detects/touchevents.js#L40
@@ -163,6 +164,11 @@ $(function() {
           $(document).off(CLICK_EVENT, '.overlay');
           self.$share.hide();
         });
+      });
+      $('.btn-more').on(CLICK_EVENT, function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+        window.location.href = MORE_URL;
       });
       this.$btnpause.on(CLICK_EVENT, function (e) {
         e.stopPropagation();
