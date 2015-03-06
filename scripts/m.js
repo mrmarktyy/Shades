@@ -176,6 +176,7 @@ $(function() {
       this.curLane = 0;
       this.score = 0;
       this.falling = false;
+      this.prepareReady = false;
       this.offsetY = null;
     };
 
@@ -191,9 +192,8 @@ $(function() {
         self.$menu.hide();
 
         self.$livescore.show();
-        self.prepareShade(function () {
-          self.transformShade();
-        });
+        self.prepareShade();
+        self.transformShade();
       });
 
       this.score = 0;
@@ -260,7 +260,7 @@ $(function() {
       setTimeout(function () {
         self.$gameoverUp.addClass('in');
         self.$gameoverDown.addClass('in');
-      });
+      }, 100);
     };
 
     this.prepareShade = function (cb) {
@@ -268,6 +268,7 @@ $(function() {
       var color = this.randomColor();
       var lane = this.randomLane();
 
+      this.prepareReady = false;
       this.$prepareShade = $('<div />')
         .addClass('shade prepare-0 bg-' + color)
         .attr('data-lane', lane).attr('data-color', color)
@@ -277,11 +278,13 @@ $(function() {
         });
 
       this.$game.append(this.$prepareShade);
+      // this.$prepareShade.hide().show();  // Potential hack to force reflow
 
       this.$prepareShade.on(ANIMATION_END_EVENTS, function () {
         self.$prepareShade
           .removeClass('prepare-0').addClass('prepare-1')
           .off(ANIMATION_END_EVENTS);
+        self.prepareReady = true;
         if (cb) {
           cb();
         }
@@ -293,6 +296,12 @@ $(function() {
 
     this.transformShade = function () {
       var self = this;
+      if (!this.prepareReady) {
+        setTimeout(function () {
+          self.transformShade();
+        }, 50);
+        return;
+      }
       this.curLane = this.$prepareShade.data('lane');
       this.$prepareShade.on(ANIMATION_END_EVENTS, function (event) {
         if (event.propertyName === 'width') {
@@ -351,10 +360,12 @@ $(function() {
           self.falling = false;
           self.lanes[self.curLane].push({shade: self.$activeShade, y: max_y});
           self.$activeShade.on(ANIMATION_END_EVENTS, function() {
-            self.$activeShade.removeClass('landing').off(ANIMATION_END_EVENTS);
+            self.$activeShade
+              .removeClass('landing')
+              .off(ANIMATION_END_EVENTS);
             self.updateScore(2);
             self.checkCombine(self.curLane, function () {
-              self.afterCombine();
+              self.postCombine();
             });
           });
 
@@ -432,7 +443,7 @@ $(function() {
       this.shades[color] ++;
     };
 
-    this.afterCombine = function () {
+    this.postCombine = function () {
       if (this.checkDeath()) {
         this.dead();
       } else {
