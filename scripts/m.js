@@ -304,7 +304,7 @@ $(function() {
       this.$gameoverDown.show();
 
       if (IS_WECHAT) {
-        this.$title.text('Duang的一下，我就赢得了' + this.score + '分。谁敢超越我吗？？');
+        this.$title.text('Duang, Duang的几下，我就赢得了' + this.score + '分，谁敢来挑战我？');
       }
 
       setTimeout(function () {
