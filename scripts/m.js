@@ -63,6 +63,7 @@ $(function() {
     var BG_HEIGHT = GAME_HEIGHT - AD_HEIGHT;
     var MAX_Y = BG_HEIGHT - SHADE_HEIGHT;
     var ALL_THEME_CLASS = '';
+    var TITLE_DEFAULT = '';
 
     this.init = function () {
       this.initVars();
@@ -91,6 +92,8 @@ $(function() {
       this.$lanes = $('.lane').css({
         height: BG_HEIGHT + 'px'
       });
+      this.$title = $('title');
+      TITLE_DEFAULT = this.$title.text();
       this.$lane2 = $('.lane-2');
       this.$share = $('.share');
       this.$gametitle = $('.game-title');
@@ -200,6 +203,7 @@ $(function() {
 
     this.reset = function () {
       $('.shade').remove();
+      this.$title.text(TITLE_DEFAULT);
       this.$lanes.removeClass('active');
       this.$menu.hide();
       this.$tutorial.hide();
@@ -298,6 +302,10 @@ $(function() {
       var self = this;
       this.$gameoverUp.show();
       this.$gameoverDown.show();
+
+      if (IS_WECHAT) {
+        this.$title.text('Duang的一下，我就赢得了' + this.score + '分。谁敢超越我吗？？');
+      }
 
       setTimeout(function () {
         self.$gameoverUp.addClass('in');
