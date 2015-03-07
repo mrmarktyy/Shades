@@ -268,6 +268,7 @@ body {
   -webkit-transform: translate3d(0, -50%, 0);
           transform: translate3d(0, -50%, 0);
   position: absolute;
+  z-index: 12;
   &.ing {
     -webkit-animation: countdown 1s linear;
             animation: countdown 1s linear;
@@ -330,8 +331,8 @@ body {
           transform: translate3d(-50%, 0, 0);
 }
 
-.btn-share { top: 25%; }
-.btn-playagain { top: 45%; }
+.btn-playagain { top: 25%; }
+.btn-share { top: 45%; }
 .btn-more { top: 65%; }
 
 .lane-0 { left: 0;  }

@@ -152,7 +152,7 @@ body { margin: 0; font-family: 'Poiret One', Helvetica, Georgia; -webkit-touch-c
 .btn-pause { cursor: pointer; width: 20px; height: 18px; right: 15px; top: 17px; position: absolute; z-index: 11; }
 .btn-pause .bar { width: 6px; height: 100%; display: inline-block; }
 
-.countdown { width: 100%; height: 50px; background-color: rgba(0, 0, 0, 0.3); top: 50%; -webkit-transform: translate3d(0, -50%, 0); transform: translate3d(0, -50%, 0); position: absolute; }
+.countdown { width: 100%; height: 50px; background-color: rgba(0, 0, 0, 0.3); top: 50%; -webkit-transform: translate3d(0, -50%, 0); transform: translate3d(0, -50%, 0); position: absolute; z-index: 12; }
 .countdown.ing { -webkit-animation: countdown 1s linear; animation: countdown 1s linear; }
 .countdown > div { color: white; text-align: center; font-size: 18px; line-height: 50px; }
 
@@ -168,9 +168,9 @@ body { margin: 0; font-family: 'Poiret One', Helvetica, Georgia; -webkit-touch-c
 
 .btn { cursor: pointer; width: 200px; border: 1px solid #222; border-radius: 10px; padding: 10px; text-align: center; left: 50%; position: absolute; -webkit-transform: translate3d(-50%, 0, 0); transform: translate3d(-50%, 0, 0); }
 
-.btn-share { top: 25%; }
+.btn-playagain { top: 25%; }
 
-.btn-playagain { top: 45%; }
+.btn-share { top: 45%; }
 
 .btn-more { top: 65%; }
 
