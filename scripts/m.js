@@ -61,6 +61,9 @@ $(function() {
     var MAX_THEME = 5;
     var COUNT_DOWN = 3;
     var BG_HEIGHT = GAME_HEIGHT - AD_HEIGHT;
+    var BTN_LARGE_HEIGHT = 100;
+    var BTN_LARGE_DOWN_TOP = Math.round(BG_HEIGHT * 0.35);
+    var BTN_LARGE_UP_TOP = BTN_LARGE_DOWN_TOP - BTN_LARGE_HEIGHT;
     var MAX_Y = BG_HEIGHT - SHADE_HEIGHT;
     var ALL_THEME_CLASS = '';
     var TITLE_DEFAULT = '';
@@ -103,11 +106,14 @@ $(function() {
       this.$score = $('.score span');
       this.$best = $('.best span');
       this.$gameoverUp = $('.gameover-up').css({
-        height: (GAME_HEIGHT / 2) + 'px'
+        height: Math.ceil(GAME_HEIGHT / 2) + 'px'
       });
       this.$gameoverDown = $('.gameover-down').css({
-        height: (GAME_HEIGHT / 2) + 'px'
+        height: Math.floor(GAME_HEIGHT / 2) + 'px'
       });
+      $('.btn-large.up').css({'top': BTN_LARGE_UP_TOP + 'px'});
+      $('.btn-large.down').css({'top': BTN_LARGE_DOWN_TOP + 'px'});
+      $('.btn-theme, .btn-tutorial').css({'top': (BTN_LARGE_DOWN_TOP + BTN_LARGE_HEIGHT + 30) + 'px'});
       this.$hidden = $('.hidden');
       this.best = localStorage.getItem('best') || 0;
       this.theme = localStorage.getItem('theme') || 0;
