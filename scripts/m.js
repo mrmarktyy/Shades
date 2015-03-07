@@ -836,7 +836,7 @@ $(function() {
         }
       }
       var possibles = index + 1;
-      possibles = possibles > 4 ? 4 : possibles;
+      possibles = possibles > 3 ? 3 : possibles;
       return this._random(0, possibles);
     };
 
