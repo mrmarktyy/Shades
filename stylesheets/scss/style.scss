@@ -130,18 +130,60 @@ body {
 .best { top: 0; }
 
 .menu,
-.pause {
+.pause,
+.tutorial {
   display: none;
   width: 100%;
   top: 0;
   position: absolute;
   z-index: 11;
+}
+
+.menu {
   .best {
     font-size: 14px;
     bottom: 0;
     top: auto;
     background-color: #555;
   }
+}
+
+.tutorial {
+  .intro {
+    position: absolute;
+    top: 40%;
+    width: 100%;
+    -webkit-transform: translate3d(0, -50%, 0);
+            transform: translate3d(0, -50%, 0);
+    text-align: center;
+  }
+  .btn-next {
+    position: relative;
+    width: 50px;
+  }
+}
+
+.tutorial__text,
+.tutorial__success {
+  display: none;
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  color: white;
+}
+.tutorial__text { top: 60%; }
+.tutorial__success { top: 40%; }
+
+.spot {
+  display: none;
+  width: 30px;
+  height: 30px;
+  top: 20%;
+  background: white;
+  border-radius: 50%;
+  position: absolute;
+  -webkit-animation: spot 1s infinite ease-in-out;
+          animation: spot 1s infinite ease-in-out;
 }
 
 .btn-large {

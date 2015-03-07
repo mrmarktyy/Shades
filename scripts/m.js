@@ -56,12 +56,13 @@ $(function() {
     var GAP = 10;
     var CLEAR_INC = 10;
     var AD_HEIGHT = 60;
-    var INIT_SHADE_HEIGHT = 10;
+    var PREPARE_SHADE_HEIGHT = 10;
     var MAX_SHADES = 11;
     var MAX_THEME = 5;
-    var ALL_THEME_CLASS = 'theme-0 theme-1 theme-2 theme-3 theme-4 theme-5';
+    var COUNT_DOWN = 3;
     var BG_HEIGHT = GAME_HEIGHT - AD_HEIGHT;
     var MAX_Y = BG_HEIGHT - SHADE_HEIGHT;
+    var ALL_THEME_CLASS = '';
 
     this.init = function () {
       this.initVars();
@@ -79,6 +80,9 @@ $(function() {
         height: BG_HEIGHT + 'px'
       });
       this.$menu = $('.menu').css({
+        height: BG_HEIGHT + 'px'
+      });
+      this.$tutorial = $('.tutorial').css({
         height: BG_HEIGHT + 'px'
       });
       this.$pause = $('.pause').css({
@@ -105,6 +109,9 @@ $(function() {
       this.best = localStorage.getItem('best') || 0;
       this.theme = localStorage.getItem('theme') || 0;
       this.$best.text(this.best);
+      for (var i = 0; i <= MAX_THEME; i++) {
+        ALL_THEME_CLASS += 'theme-' + i + ' ';
+      }
     };
 
     this.injectStylesheet = function () {
@@ -116,7 +123,7 @@ $(function() {
 
     this.bindEvents = function () {
       var self = this;
-      $('.lane').on('mousedown touchstart', function (e) {
+      this.onLaneCick = function (e) {
         if (self.falling) {
           if (e.touches) {
             e = e.touches[0];
@@ -125,7 +132,8 @@ $(function() {
           self.offsetY = e.offsetY || e.clientY;
           self.moveTo($(e.target).data('lane'));
         }
-      });
+      };
+      $('.lane').on('mousedown touchstart', this.onLaneCick);
       $('.lane').on('mousemove touchmove', function (e) {
         if (self.falling && self.pressed) {
           if (e.touches) {
@@ -150,12 +158,15 @@ $(function() {
           self.menu();
         });
 
-        $('.shade').remove();
         self.$gameoverUp.removeClass('in');
         self.$gameoverDown.removeClass('in');
       });
       $('.btn-theme').on(CLICK_EVENT, function () {
         self.updateTheme();
+      });
+      $('.btn-tutorial').on(CLICK_EVENT, function () {
+        self.tmpBest = self.best;
+        self.tutorial(1, '您的目标<br><br>用相同颜色的方块<br>组成一排。');
       });
       $('.btn-share').on(CLICK_EVENT, function(e) {
         self.$share.show();
@@ -188,8 +199,10 @@ $(function() {
     };
 
     this.reset = function () {
+      $('.shade').remove();
       this.$lanes.removeClass('active');
       this.$menu.hide();
+      this.$tutorial.hide();
       this.$pause.hide();
       this.$countdown.hide();
       this.$livescore.hide();
@@ -205,6 +218,7 @@ $(function() {
       this.prepareReady = false;
       this.offsetY = null;
       this.paused = false;
+      this.isTutorial = false;
     };
 
     this.start = function () {
@@ -314,11 +328,11 @@ $(function() {
       $('.btn-continue.up .content').on(ANIMATION_END_EVENTS, function () {
         $('.btn-continue.up .content').off(ANIMATION_END_EVENTS);
         self.$pause.hide();
-        self.countdown(3, function () {
+        self.countdown(COUNT_DOWN, function () {
           self.$btnpause.show();
           self.$countdown.hide();
           $('.shade').removeClass('blur');
-          self.fall(true);
+          self.fall({isContinue: true});
         });
       });
 
@@ -345,10 +359,106 @@ $(function() {
       }, 100);
     };
 
-    this.prepareShade = function (cb) {
+    this.tutorial = function (stage, text, btn) {
       var self = this;
-      var color = this.randomColor();
-      var lane = this.randomLane();
+      this.isTutorial = true;
+      this.stage = stage;
+      this.$menu.hide();
+      $('.tutorial__success').hide();
+      this.$tutorial.show();
+      $('.tutorial .intro .text').html(text);
+      $('.btn-begin .content').removeClass('in');
+      $('.lane').off('mousedown touchstart', this.onLaneCick);
+
+      $('.btn-next').text(btn || '尝试').on(CLICK_EVENT, function () {
+        $('.btn-next').off(CLICK_EVENT);
+        self['stage' + stage].call(self);
+      });
+    };
+
+    this.stage1 = function () {
+      var self = this;
+      this.$tutorial.hide();
+      this.$livescore.show();
+
+      this.createShade({lane: 0, color: 0, position: 0});
+      this.createShade({lane: 1, color: 0, position: 0});
+      this.createShade({lane: 2, color: 0, position: 0});
+
+      this.prepareShade({color: 0, lane: 1});
+      this.transformShade({stop: 50,
+        cb: function () {
+          $('.tutorial__text')
+            .html('<p>组成一排</p><p>触摸屏幕移动方块到正确的行列。</p>')
+            .show();
+          $('.spot').css({'left': '80%'}).show();
+          $('.lane-3, .spot').on(CLICK_EVENT, function () {
+            $('.lane-3, .spot').off(CLICK_EVENT);
+            $('.tutorial__text').hide();
+            $('.spot').hide();
+            self.moveTo(3);
+            self.fall({isContinue: true, top: 50});
+          });
+        }
+      });
+    };
+
+    this.stage2 = function () {
+      var self = this;
+      this.$tutorial.hide();
+      this.$livescore.show();
+
+      this.createShade({lane: 0, color: 0, position: 0});
+      this.createShade({lane: 1, color: 1, position: 0});
+      this.createShade({lane: 2, color: 1, position: 0});
+      this.createShade({lane: 3, color: 1, position: 0});
+
+      this.prepareShade({color: 0, lane: 2});
+      this.transformShade({stop: 50,
+        cb: function () {
+          $('.tutorial__text')
+            .html('<p>合并2种颜色</p><p>触摸屏幕移动方块到正确的行列。</p>')
+            .show();
+          $('.spot').css({'left': '5%'}).show();
+          $('.lane-0, .spot').on(CLICK_EVENT, function () {
+            $('.lane-0, .spot').off(CLICK_EVENT);
+            $('.tutorial__text').hide();
+            $('.spot').hide();
+            self.moveTo(0);
+            self.fall({isContinue: true, top: 50});
+          });
+        }
+      });
+    };
+
+    this.stage3 = function () {
+      this.isTutorial = false;
+      this.$tutorial.hide();
+      $('.tutorial__success').hide();
+      $('.lane').on('mousedown touchstart', this.onLaneCick);
+      this.menu();
+    };
+
+    this.tutorialCallback = function () {
+      var self = this, html, btn;
+      $('.tutorial__success').show();
+      if (this.stage === 1) {
+        html = '提示<br><br>堆叠相同颜色<br>的方块以组成<br>更深的颜色。';
+      } else if (this.stage === 2) {
+        html = '提示<br><br>向下滑动<br>使方块下降速度更快。<br>教程完成！';
+        btn = '完成';
+      }
+      setTimeout(function () {
+        self.reset();
+        self.tutorial(self.stage + 1, html, btn);
+      }, 1500);
+    };
+
+    this.prepareShade = function (options) {
+      options = options || {};
+      var self = this;
+      var color = options.color === undefined ? this.randomColor(): options.color;
+      var lane = options.lane === undefined ? this.randomLane() : options.lane;
 
       this.prepareReady = false;
       this.$prepareShade = $('<div />')
@@ -356,7 +466,7 @@ $(function() {
         .attr('data-lane', lane).attr('data-color', color)
         .css({
           'width': '100%',
-          'height': INIT_SHADE_HEIGHT + 'px'
+          'height': PREPARE_SHADE_HEIGHT + 'px'
         });
 
       this.$game.append(this.$prepareShade);
@@ -367,20 +477,17 @@ $(function() {
           .removeClass('prepare-0').addClass('prepare-1')
           .off(ANIMATION_END_EVENTS);
         self.prepareReady = true;
-        if (cb) {
-          cb();
-        }
       });
       setTimeout(function () {
         self.$prepareShade.css({'opacity': 1});
       }, 100);
     };
 
-    this.transformShade = function () {
+    this.transformShade = function (options) {
       var self = this;
       if (!this.prepareReady) {
         setTimeout(function () {
-          self.transformShade();
+          self.transformShade(options);
         }, 50);
         return;
       }
@@ -398,7 +505,7 @@ $(function() {
             .off(ANIMATION_END_EVENTS);
           self.$activeShade = self.$prepareShade;
           self.$prepareShade = null;
-          self.fall();
+          self.fall(options);
         }
       });
       // width => 25%
@@ -407,15 +514,16 @@ $(function() {
           .addClass('lane-' + self.curLane)
           .css({
             'width': '',
-            'height': INIT_SHADE_HEIGHT + 'px'
+            'height': PREPARE_SHADE_HEIGHT + 'px'
           });
       }, 100);
     };
 
-    this.fall = function (isContinue) {
+    this.fall = function (options) {
+      options = options || {};
       var self = this;
-      if (isContinue) {
-        var top = this.$activeShade[0].getBoundingClientRect().top;
+      if (options.isContinue) {
+        var top = options.top || this.$activeShade[0].getBoundingClientRect().top;
         this.$activeShade.css({
           'transform': 'translate3d(0, ' + (top + SPEED.NORMAL) + 'px, 0)',
           '-webkit-transform': 'translate3d(0, ' + (top + SPEED.NORMAL) + 'px, 0)'
@@ -435,6 +543,7 @@ $(function() {
       setTimeout(function () {
         self.prepareShade();
       }, 100);
+      loop();
       function loop () {
         var len = self.lanes[self.curLane].length,
             y = self.$activeShade[0].getBoundingClientRect().top,
@@ -445,6 +554,16 @@ $(function() {
           self.looping = false;
         }
         if (self.looping) {
+          if (options.stop && y > options.stop) {
+            self.$activeShade.css({
+              'transform': 'translate3d(0, ' + y + 'px, 0)',
+              '-webkit-transform': 'translate3d(0, ' + y + 'px, 0)'
+            });
+            if (options.cb) {
+              options.cb();
+            }
+            return;
+          }
           if (!self.paused) {
             window.requestAnimationFrame(loop);
           }
@@ -469,7 +588,6 @@ $(function() {
             });
         }
       }
-      loop();
     };
 
     this.checkCombine = function (lane, cb) {
@@ -537,6 +655,9 @@ $(function() {
     };
 
     this.postCombine = function () {
+      if (this.isTutorial) {
+        return this.tutorialCallback();
+      }
       if (this.checkDeath()) {
         this.dead();
       } else {
