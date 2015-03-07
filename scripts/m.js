@@ -441,9 +441,8 @@ $(function() {
 
     this.stage3 = function () {
       this.isTutorial = false;
-      this.$tutorial.hide();
-      $('.tutorial__success').hide();
       $('.lane').on('mousedown touchstart', this.onLaneCick);
+      this.$tutorial.hide();
       this.menu();
     };
 
@@ -554,18 +553,18 @@ $(function() {
       loop();
       function loop () {
         var len = self.lanes[self.curLane].length,
-            y = self.$activeShade[0].getBoundingClientRect().top,
             max_y = self.getY(len);
 
-        self.$hidden.text(y);
-        if (max_y - y <= GAP) {
+        self.y = self.$activeShade[0].getBoundingClientRect().top;
+        self.$hidden.text(self.y);
+        if (max_y - self.y <= GAP) {
           self.looping = false;
         }
         if (self.looping) {
-          if (options.stop && y > options.stop) {
+          if (options.stop && self.y > options.stop) {
             self.$activeShade.css({
-              'transform': 'translate3d(0, ' + y + 'px, 0)',
-              '-webkit-transform': 'translate3d(0, ' + y + 'px, 0)'
+              'transform': 'translate3d(0, ' + self.y + 'px, 0)',
+              '-webkit-transform': 'translate3d(0, ' + self.y + 'px, 0)'
             });
             if (options.cb) {
               options.cb();
@@ -854,11 +853,24 @@ $(function() {
 
     this.moveTo = function (lane) {
       if (this.falling) {
-        this.curLane = lane;
-        this.$activeShade
-          .removeClass('lane-0 lane-1 lane-2 lane-3')
-          .addClass('lane-' + lane);
+        if (this.validateMove(this.curLane, lane)) {
+          this.curLane = lane;
+          this.$activeShade
+            .removeClass('lane-0 lane-1 lane-2 lane-3')
+            .addClass('lane-' + lane);
+        }
       }
+    };
+
+    this.validateMove = function (from, to) {
+      for (var i = Math.min(from, to); i <= Math.max(from, to); i++) {
+        if (i !== from) {
+          if (this.y + SHADE_HEIGHT > this.getY(this.lanes[i].length)) {
+            return false;
+          }
+        }
+      }
+      return true;
     };
 
     this.getY = function (len) {
