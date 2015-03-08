@@ -832,7 +832,7 @@ $(function() {
           .removeClass(ALL_THEME_CLASS)
           .addClass('theme-' + self.theme);
         $('.btn-begin .content').addClass('in');
-        $('#wx_pic img').attr('src', 'images/theme' + self.theme + '.png');
+        $('#wx_pic img').attr('src', 'images/theme' + self.theme + '.jpg');
       });
 
       $('.btn-begin .content').removeClass('in');
