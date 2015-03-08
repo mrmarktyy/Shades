@@ -449,6 +449,9 @@ $(function() {
       this.isTutorial = false;
       $('.lane').on('mousedown touchstart', this.onLaneCick);
       this.$tutorial.hide();
+      if (this.best > this.tmpBest) {
+        this.updateBest(this.tmpBest);
+      }
       this.menu();
     };
 
