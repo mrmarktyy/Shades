@@ -111,6 +111,8 @@ body { margin: 0; font-family: 'Poiret One', Helvetica, Georgia; -webkit-touch-c
 
 .live-score { display: none; background-color: transparent !important; text-align: center; width: 100%; top: 20px; position: absolute; font-size: 22px; z-index: 11; }
 
+.level { top: 24px; left: 10px; position: absolute; z-index: 11; }
+
 .btn-pause { cursor: pointer; width: 20px; height: 18px; right: 15px; top: 22px; position: absolute; z-index: 11; }
 .btn-pause .bar { width: 6px; height: 100%; display: inline-block; }
 

@@ -50,6 +50,7 @@ $(function() {
     var IS_TOUCH = !!(('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch);
     var CLICK_EVENT = IS_TOUCH ? 'touchstart' : 'click';
     var SPEED = {
+      LEVEL_INC: 300,
       NORMAL: 1500,
       FAST: 4000
     };
@@ -101,6 +102,7 @@ $(function() {
       this.$share = $('.share');
       this.$gametitle = $('.game-title');
       this.$livescore = $('.live-score');
+      this.$level = $('.level');
       this.$btnpause = $('.btn-pause');
       this.$countdown = $('.countdown');
       this.$score = $('.score span');
@@ -218,6 +220,7 @@ $(function() {
       this.$countdown.hide();
       this.$livescore.hide();
       this.$btnpause.hide();
+      this.$level.hide();
       this.$gametitle.hide();
       this.$gameoverUp.hide();
       this.$gameoverDown.hide();
@@ -225,6 +228,7 @@ $(function() {
       this.shades = [0, 0, 0, 0, 0];
       this.curLane = 0;
       this.score = 0;
+      this.level = 1;
       this.falling = false;
       this.prepareReady = false;
       this.offsetY = null;
@@ -245,6 +249,7 @@ $(function() {
 
         self.$livescore.show();
         self.$btnpause.show();
+        self.$level.show();
         self.prepareShade();
         self.transformShade();
       });
@@ -311,7 +316,7 @@ $(function() {
       this.$gameoverDown.show();
 
       if (IS_WECHAT) {
-        this.$title.text(TITLE_DEFAULT + ': Duang Duang几下，我就赢得了' + this.score + '分，谁敢来挑战我？');
+        this.$title.text(TITLE_DEFAULT + ': Duang Duang，我打到了关卡 ' + this.level + '并且获得了' + this.score + '分，谁敢来挑战我？');
       }
 
       setTimeout(function () {
@@ -539,20 +544,23 @@ $(function() {
     this.fall = function (options) {
       options = options || {};
       var self = this;
+      var speed;
       if (options.isContinue) {
         var top = options.top || this.$activeShade[0].getBoundingClientRect().top;
+        speed = top + SPEED.NORMAL + (this.level - 1) * SPEED.LEVEL_INC;
         this.$activeShade.css({
-          'transform': 'translate3d(0, ' + (top + SPEED.NORMAL) + 'px, 0)',
-          '-webkit-transform': 'translate3d(0, ' + (top + SPEED.NORMAL) + 'px, 0)'
+          'transform': 'translate3d(0, ' + speed + 'px, 0)',
+          '-webkit-transform': 'translate3d(0, ' + speed + 'px, 0)'
         });
         loop();
         return;
       }
 
+      speed = SPEED.NORMAL + (this.level - 1) * SPEED.LEVEL_INC;
       this.shades[this.$activeShade.data('color')] ++;
       this.$activeShade.css({
-        'transform': 'translate3d(0, ' + SPEED.NORMAL + 'px, 0)',
-        '-webkit-transform': 'translate3d(0, ' + SPEED.NORMAL + 'px, 0)'
+        'transform': 'translate3d(0, ' + speed + 'px, 0)',
+        '-webkit-transform': 'translate3d(0, ' + speed + 'px, 0)'
       });
       this.looping = true;
       this.falling = true;
@@ -789,6 +797,7 @@ $(function() {
       if (this.score > this.best) {
         this.updateBest(this.score);
       }
+      this.updateLevel();
       this.$livescore.text(this.score);
       this.$score.text(this.score);
     };
@@ -797,6 +806,11 @@ $(function() {
       this.best = best;
       localStorage.setItem('best', this.best);
       this.$best.text(this.best);
+    };
+
+    this.updateLevel = function () {
+      this.level = Math.floor(this.score/ 100) + 1;
+      $('.level span').text(this.level);
     };
 
     this.createShade = function (options /* lane,color,position,y,class */) {
@@ -841,8 +855,8 @@ $(function() {
 
     this.speedUp = function () {
       this.$activeShade.css({
-        'transform': 'translate3d(0, ' + SPEED.FAST + 'px, 0)',
-        '-webkit-transform': 'translate3d(0, ' + SPEED.FAST + 'px, 0)',
+        'transform': 'translate3d(0, ' + (SPEED.FAST + (this.level - 1) * SPEED.LEVEL_INC) + 'px, 0)',
+        '-webkit-transform': 'translate3d(0, ' + (SPEED.FAST + (this.level - 1) * SPEED.LEVEL_INC) + 'px, 0)',
       });
     };
 
