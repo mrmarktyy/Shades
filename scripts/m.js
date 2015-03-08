@@ -113,7 +113,7 @@ $(function() {
       });
       $('.btn-large.up').css({'top': BTN_LARGE_UP_TOP + 'px'});
       $('.btn-large.down').css({'top': BTN_LARGE_DOWN_TOP + 'px'});
-      $('.btn-theme, .btn-tutorial').css({'top': (BTN_LARGE_DOWN_TOP + BTN_LARGE_HEIGHT + 30) + 'px'});
+      $('.btn-theme, .btn-tutorial').css({'top': (BTN_LARGE_DOWN_TOP + BTN_LARGE_HEIGHT + 20) + 'px'});
       this.$hidden = $('.hidden');
       this.best = localStorage.getItem('best') || 0;
       this.theme = localStorage.getItem('theme') || 0;
