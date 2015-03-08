@@ -136,7 +136,7 @@ $(function() {
     this.bindEvents = function () {
       var self = this;
       this.onLaneCick = function (e) {
-        if (self.falling) {
+        if (self.falling && !self.paused) {
           if (e.touches) {
             e = e.touches[0];
           }
@@ -147,7 +147,7 @@ $(function() {
       };
       $('.lane').on('mousedown touchstart', this.onLaneCick);
       $('.lane').on('mousemove touchmove', function (e) {
-        if (self.falling && self.pressed) {
+        if (self.falling && self.pressed && !self.paused) {
           if (e.touches) {
             e = e.touches[0];
           }
@@ -343,7 +343,6 @@ $(function() {
 
     this.continue = function () {
       var self = this;
-      this.paused = false;
 
       $('.btn-continue.up .content').on(ANIMATION_END_EVENTS, function () {
         $('.btn-continue.up .content').off(ANIMATION_END_EVENTS);
@@ -351,6 +350,7 @@ $(function() {
         self.countdown(COUNT_DOWN, function () {
           self.$btnpause.show();
           self.$countdown.hide();
+          self.paused = false;
           $('.shade').removeClass('blur');
           self.fall({isContinue: true});
         });
