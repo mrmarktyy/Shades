@@ -291,7 +291,7 @@ body {
   position: absolute;
   text-align: center;
   font-size: 35px;
-  top: 50%;
+  top: 45%;
   left: 50%;
   -webkit-transform: translate3d(-50%, -50%, 0);
           transform: translate3d(-50%, -50%, 0);
@@ -329,9 +329,9 @@ body {
           transform: translate3d(-50%, 0, 0);
 }
 
-.btn-playagain { top: 25%; }
-.btn-share { top: 45%; }
-.btn-more { top: 65%; }
+.btn-playagain { top: 60px; }
+.btn-share { top: 110px; }
+.btn-more { top: 160px; }
 
 .lane-0 { left: 0;  }
 .lane-1 { left: 25%; }
