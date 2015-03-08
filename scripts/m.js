@@ -116,6 +116,7 @@ $(function() {
       $('.btn-large.up').css({'top': BTN_LARGE_UP_TOP + 'px'});
       $('.btn-large.down').css({'top': BTN_LARGE_DOWN_TOP + 'px'});
       $('.btn-theme, .btn-tutorial').css({'top': (BTN_LARGE_DOWN_TOP + BTN_LARGE_HEIGHT + 20) + 'px'});
+      $('.btn-home').css({'top': (BTN_LARGE_DOWN_TOP + BTN_LARGE_HEIGHT + 20) + 'px'});
       this.$hidden = $('.hidden');
       this.best = localStorage.getItem('best') || 0;
       this.theme = localStorage.getItem('theme') || 0;
@@ -193,6 +194,12 @@ $(function() {
         e.preventDefault();
         window.location.href = MORE_URL;
       });
+      $('.btn-home').on(CLICK_EVENT, function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+        self.reset();
+        self.welcome();
+      });
       this.$btnpause.on(CLICK_EVENT, function (e) {
         e.stopPropagation();
         e.preventDefault();
@@ -224,6 +231,7 @@ $(function() {
       this.$gametitle.hide();
       this.$gameoverUp.hide();
       this.$gameoverDown.hide();
+      $('.btn-continue .content').removeClass('in');
       this.lanes = [[], [], [], []];
       this.shades = [0, 0, 0, 0, 0];
       this.curLane = 0;
@@ -262,6 +270,9 @@ $(function() {
     this.welcome = function () {
       var self = this;
       this.tmpBest = this.best;
+      this.$game
+          .removeClass(ALL_THEME_CLASS)
+          .addClass('theme-0');
       this.$lane2.addClass('active fade');
       this.$gametitle.show().removeClass('out');
 

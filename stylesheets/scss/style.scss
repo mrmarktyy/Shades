@@ -254,6 +254,16 @@ body {
   }
 }
 
+.btn-home {
+  position: absolute;
+  width: 60%;
+  left: 20%;
+  padding: 10px;
+  box-sizing: border-box;
+  text-align: center;
+  cursor: pointer;
+}
+
 .btn-theme,
 .btn-tutorial {
   font-size: 14px;
