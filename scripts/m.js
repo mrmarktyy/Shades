@@ -311,7 +311,7 @@ $(function() {
       this.$gameoverDown.show();
 
       if (IS_WECHAT) {
-        this.$title.text('Duang, Duang的几下，我就赢得了' + this.score + '分，谁敢来挑战我？');
+        this.$title.text(TITLE_DEFAULT + ': Duang Duang几下，我就赢得了' + this.score + '分，谁敢来挑战我？');
       }
 
       setTimeout(function () {
