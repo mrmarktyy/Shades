@@ -117,6 +117,7 @@ $(function() {
       this.$hidden = $('.hidden');
       this.best = localStorage.getItem('best') || 0;
       this.theme = localStorage.getItem('theme') || 0;
+      $('#wx_pic img').attr('src', 'images/theme' + this.theme + '.jpg');
       this.$best.text(this.best);
       for (var i = 0; i <= MAX_THEME; i++) {
         ALL_THEME_CLASS += 'theme-' + i + ' ';
