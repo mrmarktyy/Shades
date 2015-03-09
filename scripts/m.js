@@ -260,7 +260,7 @@ $(function() {
       this.isTutorial = false;
       this.adfOff();
 
-      if (this._random(1, 100) <= 50) {
+      if (this._random(1, 100) <= 40) {
         this.adf = true;
       }
     };
