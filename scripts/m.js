@@ -46,6 +46,7 @@ $(function() {
     var MORE_URL = 'http://www.yoocc.com/';
     var SHADE_HEIGHT = Math.ceil(BASE_SHADE_HEIGHT * HEIGHT_RATIO);
     var IS_WECHAT = !!navigator.userAgent.match(/MicroMessenger/);
+    var IS_ANDROID = navigator.userAgent.toLowerCase().indexOf('android') > -1;
     // https://github.com/Modernizr/Modernizr/blob/master/feature-detects/touchevents.js#L40
     var IS_TOUCH = !!(('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch);
     var CLICK_EVENT = IS_TOUCH ? 'touchstart' : 'click';
@@ -208,6 +209,10 @@ $(function() {
       $('.btn-more').on(CLICK_EVENT, function (e) {
         e.stopPropagation();
         e.preventDefault();
+        // FIXME: Change to APK url and Btn text if is Android
+        if (IS_ANDROID) {
+
+        }
         window.location.href = MORE_URL;
       });
       $('.btn-home').on(CLICK_EVENT, function (e) {
