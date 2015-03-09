@@ -77,6 +77,18 @@ $(function() {
     };
 
     this.initVars = function () {
+      // var self = this;
+      // this.enable = false;
+      // $.ajax({
+      //   dataType: 'json',
+      //   url: '/config.json',
+      //   success: function (data) {
+      //     self.enable = data && data.enable;
+      //   },
+      //   error: function () {
+      //     self.enable = false;
+      //   }
+      // });
       this.$game = $('#game').css({
         width: GAME_WIDTH + 'px',
         height: GAME_HEIGHT + 'px'
@@ -107,6 +119,10 @@ $(function() {
       this.$countdown = $('.countdown');
       this.$score = $('.score span');
       this.$best = $('.best span');
+      this.$ads = $('.ads');
+      this.$ad = $('.ad').css({
+        width: GAME_WIDTH + 'px'
+      });
       this.$gameoverUp = $('.gameover-up').css({
         height: Math.ceil(GAME_HEIGHT / 2) + 'px'
       });
@@ -242,6 +258,11 @@ $(function() {
       this.offsetY = null;
       this.paused = false;
       this.isTutorial = false;
+      this.adfOff();
+
+      if (this._random(1, 100) <= 50) {
+        this.adf = true;
+      }
     };
 
     this.start = function () {
@@ -260,6 +281,9 @@ $(function() {
         self.$level.show();
         self.prepareShade();
         self.transformShade();
+        if (self.adf) {
+          self.adfOn();
+        }
       });
 
       this.score = 0;
@@ -694,6 +718,9 @@ $(function() {
       if (this.isTutorial) {
         return this.tutorialCallback();
       }
+      if (this.adf) {
+        this.adfOff();
+      }
       if (this.checkDeath()) {
         this.dead();
       } else {
@@ -915,6 +942,17 @@ $(function() {
 
     this.getBottom = function (len) {
       return AD_HEIGHT + (len === 0 ? 0 : (len * SHADE_HEIGHT - 1));
+    };
+
+    this.adfOn = function () {
+      this.$ads.addClass('adf');
+      this.$ad.show();
+    };
+
+    this.adfOff = function () {
+      this.$ads.removeClass('adf');
+      this.$ad.hide();
+      this.adf = false;
     };
 
     this._random = function(min, max) {
