@@ -186,6 +186,7 @@ $(function() {
           self.$gameoverUp.off(ANIMATION_END_EVENTS);
           self.reset();
           self.menu();
+          GDT.showWindow();
         });
 
         self.$gameoverUp.removeClass('in');
@@ -226,6 +227,7 @@ $(function() {
         e.preventDefault();
         if (self.falling) {
           self.pause();
+          GDT.showWindow();
         }
       });
       $('.btn-continue').on(CLICK_EVENT, function (e) {
