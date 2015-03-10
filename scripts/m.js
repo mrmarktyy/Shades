@@ -135,8 +135,8 @@ $(function() {
       $('.btn-theme, .btn-tutorial').css({'top': (BTN_LARGE_DOWN_TOP + BTN_LARGE_HEIGHT + 20) + 'px'});
       $('.btn-home').css({'top': (BTN_LARGE_DOWN_TOP + BTN_LARGE_HEIGHT + 20) + 'px'});
       this.$hidden = $('.hidden');
-      this.best = localStorage.getItem('best') || 0;
-      this.theme = localStorage.getItem('theme') || 0;
+      this.best = localStorage.getItem('shades-best') || 0;
+      this.theme = localStorage.getItem('shades-theme') || 0;
       $('#wx_pic img').attr('src', 'images/theme' + this.theme + '.jpg');
       this.$best.text(this.best);
       for (var i = 0; i <= MAX_THEME; i++) {
@@ -847,7 +847,7 @@ $(function() {
 
     this.updateBest = function (best) {
       this.best = best;
-      localStorage.setItem('best', this.best);
+      localStorage.setItem('shades-best', this.best);
       this.$best.text(this.best);
     };
 
@@ -885,7 +885,7 @@ $(function() {
         if (self.theme > MAX_THEME) {
           self.theme = 0;
         }
-        localStorage.setItem('theme', self.theme);
+        localStorage.setItem('shades-theme', self.theme);
         self.$game
           .removeClass(ALL_THEME_CLASS)
           .addClass('theme-' + self.theme);
