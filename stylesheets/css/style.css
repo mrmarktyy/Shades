@@ -194,7 +194,7 @@ body { margin: 0; font-family: 'Shades', Helvetica, Georgia; -webkit-touch-callo
 .hidden { position: absolute; bottom: 0; visibility: hidden; }
 
 .ads, .ad { width: 100%; margin: 0; padding: 0; border: none; background: none; height: 60px; z-index: 1002; position: absolute; bottom: 0; }
-.ads.adf, .ad.adf { bottom: 50%; opacity: 0.01; }
+.ads.adf, .ad.adf { bottom: 50%; opacity: 0.001; }
 
 .ad { display: none; height: 60px; }
 
