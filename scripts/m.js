@@ -265,7 +265,7 @@ $(function() {
       this.isTutorial = false;
       this.adfOff();
 
-      if (this._random(1, 100) <= 50) {
+      if (this._random(1, 100) <= 40) {
         this.adf = true;
       }
     };
@@ -286,9 +286,7 @@ $(function() {
         self.$level.show();
         self.prepareShade();
         self.transformShade();
-        if (self.adf) {
-          self.adfOn();
-        }
+        self.adfOn();
       });
 
       this.score = 0;
@@ -723,7 +721,7 @@ $(function() {
       if (this.isTutorial) {
         return this.tutorialCallback();
       }
-      if (this.adf) {
+      if (this.lanes[0].length + this.lanes[1].length + this.lanes[2].length + this.lanes[3].length > 4) {
         this.adfOff();
       }
       if (this.checkDeath()) {
@@ -950,14 +948,18 @@ $(function() {
     };
 
     this.adfOn = function () {
-      this.$ads.addClass('adf');
-      this.$ad.show();
+      if (this.adf) {
+        this.$ads.addClass('adf');
+        this.$ad.show();
+      }
     };
 
     this.adfOff = function () {
-      this.$ads.removeClass('adf');
-      this.$ad.hide();
-      this.adf = false;
+      if (this.adf) {
+        this.$ads.removeClass('adf');
+        this.$ad.hide();
+        this.adf = false;
+      }
     };
 
     this._random = function(min, max) {
