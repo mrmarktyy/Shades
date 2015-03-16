@@ -912,7 +912,7 @@ $(function() {
     };
 
     this.clearState = function () {
-      localStorage.setItem('shades-state', null);
+      localStorage.setItem('shades-state', '{}');
     };
 
     this.createShade = function (options /* lane,color,position,y,class */) {
