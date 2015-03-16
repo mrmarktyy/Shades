@@ -174,6 +174,7 @@ $(function() {
         self.$gameoverUp.on(ANIMATION_END_EVENTS, function () {
           self.$gameoverUp.off(ANIMATION_END_EVENTS);
           self.reset();
+          self.clearState();
           self.menu();
         });
 
@@ -907,6 +908,10 @@ $(function() {
         }
       }
       localStorage.setItem('shades-state', JSON.stringify(state));
+    };
+
+    this.clearState = function () {
+      localStorage.setItem('shades-state', null);
     };
 
     this.createShade = function (options /* lane,color,position,y,class */) {
