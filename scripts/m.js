@@ -209,6 +209,7 @@ $(function() {
         e.stopPropagation();
         e.preventDefault();
         self.reset();
+        self.clearState();
         self.welcome();
       });
       this.$btnpause.on(CLICK_EVENT, function (e) {
