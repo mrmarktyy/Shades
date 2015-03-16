@@ -62,6 +62,7 @@ $(function() {
     var MAX_SHADES = 11;
     var MAX_THEME = 5;
     var COUNT_DOWN = 3;
+    var ADF_COUNT = 4;
     var BG_HEIGHT = GAME_HEIGHT - AD_HEIGHT;
     var BTN_LARGE_HEIGHT = 100;
     var BTN_LARGE_DOWN_TOP = Math.round(BG_HEIGHT * 0.35);
@@ -78,18 +79,6 @@ $(function() {
     };
 
     this.initVars = function () {
-      // var self = this;
-      // this.enable = false;
-      // $.ajax({
-      //   dataType: 'json',
-      //   url: '/config.json',
-      //   success: function (data) {
-      //     self.enable = data && data.enable;
-      //   },
-      //   error: function () {
-      //     self.enable = false;
-      //   }
-      // });
       this.$game = $('#game').css({
         width: GAME_WIDTH + 'px',
         height: GAME_HEIGHT + 'px'
@@ -263,6 +252,7 @@ $(function() {
       this.offsetY = null;
       this.paused = false;
       this.isTutorial = false;
+      this.isFromState = false;
       this.adfOff();
 
       if (this._random(1, 100) <= 40) {
@@ -341,10 +331,44 @@ $(function() {
     };
 
     this.menu = function () {
+      var state;
+      var stateStr = localStorage.getItem('shades-state');
+      if (stateStr) {
+        try {
+          state = JSON.parse(stateStr);
+        } catch (e) {
+          state = {};
+        }
+        if (state.status === true) {
+          this.loadFromState(state);
+          return;
+        }
+      }
       this.$menu.show();
 
       setTimeout(function () {
         $('.btn-begin .content').addClass('in');
+      }, 100);
+    };
+
+    this.loadFromState = function (state) {
+      var self = this;
+      var shades = state.shades;
+      for (var i = 0, len = shades.length; i < len; i++) {
+        this.createShade({lane: shades[i].lane, color: shades[i].color, position: shades[i].position});
+      }
+
+      this.isFromState = true;
+      this.score = 0;
+      this.updateScore(state.score);
+
+      this.$livescore.show();
+      this.$btnpause.show();
+      this.$level.show();
+      this.adfOn();
+
+      setTimeout(function () {
+        self.pause();
       }, 100);
     };
 
@@ -365,11 +389,13 @@ $(function() {
 
     this.pause = function () {
       this.paused = true;
-      var top = this.$activeShade[0].getBoundingClientRect().top;
-      this.$activeShade.css({
-        'transform': 'translate3d(0, ' + top + 'px, 0)',
-        '-webkit-transform': 'translate3d(0, ' + top + 'px, 0)'
-      });
+      if (this.$activeShade) {
+        var top = this.$activeShade[0].getBoundingClientRect().top;
+        this.$activeShade.css({
+          'transform': 'translate3d(0, ' + top + 'px, 0)',
+          '-webkit-transform': 'translate3d(0, ' + top + 'px, 0)'
+        });
+      }
       this.$btnpause.hide();
       this.$pause.show();
       $('.shade').addClass('blur');
@@ -390,7 +416,13 @@ $(function() {
           self.$countdown.hide();
           self.paused = false;
           $('.shade').removeClass('blur');
-          self.fall({isContinue: true});
+          if (self.isFromState) {
+            self.prepareShade();
+            self.transformShade();
+            self.isFromState = false;
+          } else {
+            self.fall({isContinue: true});
+          }
         });
       });
 
@@ -594,8 +626,9 @@ $(function() {
         return;
       }
 
+      var color = this.$activeShade.data('color');
       speed = SPEED.NORMAL + (this.level - 1) * SPEED.LEVEL_INC;
-      this.shades[this.$activeShade.data('color')] ++;
+      this.shades[color] ++;
       this.$activeShade.css({
         'transform': 'translate3d(0, ' + speed + 'px, 0)',
         '-webkit-transform': 'translate3d(0, ' + speed + 'px, 0)'
@@ -632,7 +665,8 @@ $(function() {
           }
         } else {
           self.falling = false;
-          self.lanes[self.curLane].push({shade: self.$activeShade, y: max_y});
+          var position = self.lanes[self.curLane].length;
+          self.lanes[self.curLane].push({shade: self.$activeShade, y: max_y, color: color, position: position});
           self.$activeShade.on(ANIMATION_END_EVENTS, function() {
             self.$activeShade
               .removeClass('landing')
@@ -712,7 +746,8 @@ $(function() {
       this.$game.append(newShade);
       this.$combinedShade.remove();
 
-      this.lanes[this.curLane].splice(len - 2, 2, {shade: newShade, y: max_y});
+      var position = this.lanes[this.curLane].length - 2;
+      this.lanes[this.curLane].splice(len - 2, 2, {shade: newShade, y: max_y, color: color, position: position});
       this.shades[color - 1] -= 2;
       this.shades[color] ++;
     };
@@ -721,12 +756,13 @@ $(function() {
       if (this.isTutorial) {
         return this.tutorialCallback();
       }
-      if (this.lanes[0].length + this.lanes[1].length + this.lanes[2].length + this.lanes[3].length > 4) {
+      if (this.lanes[0].length + this.lanes[1].length + this.lanes[2].length + this.lanes[3].length > ADF_COUNT) {
         this.adfOff();
       }
       if (this.checkDeath()) {
         this.dead();
       } else {
+        this.updateState();
         this.transformShade();
       }
     };
@@ -850,8 +886,27 @@ $(function() {
     };
 
     this.updateLevel = function () {
-      this.level = Math.floor(this.score/ 100) + 1;
+      this.level = Math.floor(this.score / 100) + 1;
       $('.level span').text(this.level);
+    };
+
+    this.updateState = function () {
+      var state = {
+        status: true,
+        score: this.score,
+        shades: []
+      };
+      for (var i = 0; i <= 3; i++) {
+        var lane = this.lanes[i];
+        for (var j = 0; j < lane.length; j++) {
+          state.shades.push({
+            lane: i,
+            color: lane[j].color,
+            position: lane[j].position
+          });
+        }
+      }
+      localStorage.setItem('shades-state', JSON.stringify(state));
     };
 
     this.createShade = function (options /* lane,color,position,y,class */) {
@@ -866,7 +921,9 @@ $(function() {
           });
       var composite = {
         shade: shade,
-        y: y
+        y: y,
+        color: options.color,
+        position: options.position
       };
       this.curLane = options.lane;
       this.shades[options.color] ++;
