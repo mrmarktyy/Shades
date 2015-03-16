@@ -383,6 +383,8 @@ $(function() {
         this.$title.text(TITLE_DEFAULT + ': Duang Duang，我打到了关卡 ' + this.level + '并且获得了' + this.score + '分，谁敢来挑战我？');
       }
 
+      this.clearState();
+
       setTimeout(function () {
         self.$gameoverUp.addClass('in');
         self.$gameoverDown.addClass('in');
