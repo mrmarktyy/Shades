@@ -391,6 +391,7 @@ body {
   visibility: hidden;
 }
 
+.adt,
 .ads,
 .ad {
   width: 100%;
@@ -404,6 +405,7 @@ body {
   bottom: 0;
 
   &.adf {
+    display: block !important;
     bottom: 50%;
     opacity: 0.001;
   }

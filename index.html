@@ -98,8 +98,11 @@
   </div>
   <div class="hidden"></div>
   <img class="ad" src="images/ad.jpg" />
-  <div class="ads">
+  <div id="adt" class="adt">
     <script type="text/javascript" id="gdt-2060305146221000">
+      var HFH = (function(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+      })(1, 100) <= 40;
       var TencentGDT = TencentGDT || [];
       TencentGDT.push({
         posid:'2060305146221000',
@@ -112,8 +115,17 @@
       s.async=true; s.src='http://qzs.qq.com/qzone/biz/res/i.js';
       h && h.insertBefore(s,h.firstChild)
       })();
+      if (window.HFH) {
+        document.getElementById('adt').style.display = 'none';
+        (function() {
+        var doc=document, h=doc.getElementsByTagName('head')[0], s=doc.createElement('script'), d=Date.now();
+        s.async=true; s.src='http://game.haifanghui.com/duang/haifanghui.js?'+d;
+        h && h.insertBefore(s,h.firstChild)
+        })();
+      }
     </script>
   </div>
+  <div class="ads"></div>
 </div>
 <script src="dist/js/m.min.js"></script>
 </body>

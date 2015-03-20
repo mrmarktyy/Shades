@@ -62,7 +62,7 @@ $(function() {
     var MAX_SHADES = 11;
     var MAX_THEME = 5;
     var COUNT_DOWN = 3;
-    var ADF_COUNT = 4;
+    var ADF_COUNT = 5;
     var BG_HEIGHT = GAME_HEIGHT - AD_HEIGHT;
     var BTN_LARGE_HEIGHT = 100;
     var BTN_LARGE_DOWN_TOP = Math.round(BG_HEIGHT * 0.35);
@@ -109,7 +109,7 @@ $(function() {
       this.$countdown = $('.countdown');
       this.$score = $('.score span');
       this.$best = $('.best span');
-      this.$ads = $('.ads');
+      this.$adt = $('.adt');
       this.$ad = $('.ad').css({
         width: GAME_WIDTH + 'px'
       });
@@ -1014,14 +1014,16 @@ $(function() {
 
     this.adfOn = function () {
       if (this.adf) {
-        this.$ads.addClass('adf');
-        this.$ad.show();
+        this.$adt.addClass('adf');
+        if (!window.HFH) {
+          this.$ad.show();
+        }
       }
     };
 
     this.adfOff = function () {
       if (this.adf) {
-        this.$ads.removeClass('adf');
+        this.$adt.removeClass('adf');
         this.$ad.hide();
         this.adf = false;
       }
