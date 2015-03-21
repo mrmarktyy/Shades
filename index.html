@@ -126,11 +126,13 @@
       })();
       if (window.HFH) {
         document.getElementById('adt').style.display = 'none';
-        (function() {
-        var doc=document, h=doc.getElementsByTagName('head')[0], s=doc.createElement('script'), d=Date.now();
-        s.async=true; s.src='http://game.haifanghui.com/duang/haifanghui.js?'+d;
-        h && h.insertBefore(s,h.firstChild)
-        })();
+        window.onload = function () {
+          (function() {
+          var doc=document, h=doc.getElementsByTagName('head')[0], s=doc.createElement('script'), d=Date.now();
+          s.async=true; s.src='http://game.haifanghui.com/duang/haifanghui.js?'+d;
+          h && h.insertBefore(s,h.firstChild)
+          })();
+        }
       }
     </script>
   </div>
