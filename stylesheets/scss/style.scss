@@ -410,11 +410,8 @@ body {
     opacity: 0.001;
   }
 }
-
-.ad {
-  display: none;
-  height: 60px;
-}
+.adt { z-index: 1003; }
+.ad { display: none;  height: 60px; }
 
 // HACK: Lock landscape mode
 @media only screen
