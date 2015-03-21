@@ -70,6 +70,7 @@ $(function() {
     var MAX_Y = BG_HEIGHT - SHADE_HEIGHT;
     var ALL_THEME_CLASS = '';
     var TITLE_DEFAULT = '';
+    var HFH_LINK = 'http://www.haifanghui.com/?utm_source=game&amp;utm_campaign=duang&amp;utm_medium=banner';
 
     this.init = function () {
       this.initVars();
@@ -223,6 +224,9 @@ $(function() {
         e.stopPropagation();
         e.preventDefault();
         self.continue();
+      });
+      $('.ads').on(CLICK_EVENT, function () {
+        window.location.href = HFH_LINK;
       });
       $(document).on('mousedown touchstart', function(e) {
         e.preventDefault();
