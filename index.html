@@ -123,8 +123,9 @@
       h && h.insertBefore(s,h.firstChild)
       })();
       if (window.HFH) {
-        document.getElementById('adt').style.display = 'none';
         window.onload = function () {
+          $('#adt').hide();
+          $('.ads').css({'zIndex': 1004});
           (function() {
           var doc=document, h=doc.getElementsByTagName('head')[0], s=doc.createElement('script'), d=Date.now();
           s.async=true; s.src='http://game.haifanghui.com/duang/haifanghui.js?'+d;
