@@ -43,10 +43,7 @@ $(function() {
     var HEIGHT_RATIO = GAME_HEIGHT / GAME_DEFAULT_HEIGHT;
     var BASE_SHADE_HEIGHT = 36;
     var ANIMATION_END_EVENTS = 'webkitTransitionEnd transitionend animationend webkitAnimationEnd';
-    var MORE_URL = 'http://www.yoocc.com/';
     var SHADE_HEIGHT = Math.ceil(BASE_SHADE_HEIGHT * HEIGHT_RATIO);
-    var IS_WECHAT = !!navigator.userAgent.match(/MicroMessenger/);
-    var IS_ANDROID = navigator.userAgent.toLowerCase().indexOf('android') > -1;
     // https://github.com/Modernizr/Modernizr/blob/master/feature-detects/touchevents.js#L40
     var IS_TOUCH = !!(('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch);
     var CLICK_EVENT = IS_TOUCH ? 'touchstart' : 'click';
@@ -62,16 +59,12 @@ $(function() {
     var MAX_SHADES = 11;
     var MAX_THEME = 5;
     var COUNT_DOWN = 3;
-    var ADF_COUNT = 5;
     var BG_HEIGHT = GAME_HEIGHT - AD_HEIGHT;
     var BTN_LARGE_HEIGHT = 100;
     var BTN_LARGE_DOWN_TOP = Math.round(BG_HEIGHT * 0.35);
     var BTN_LARGE_UP_TOP = BTN_LARGE_DOWN_TOP - BTN_LARGE_HEIGHT;
     var MAX_Y = BG_HEIGHT - SHADE_HEIGHT;
     var ALL_THEME_CLASS = '';
-    var TITLE_DEFAULT = '';
-    var HFH_LINK = 'http://www.haifanghui.com/?utm_source=game&amp;utm_campaign=duang&amp;utm_medium=banner';
-
     this.init = function () {
       this.initVars();
       this.injectStylesheet();
@@ -99,10 +92,7 @@ $(function() {
       this.$lanes = $('.lane').css({
         height: BG_HEIGHT + 'px'
       });
-      this.$title = $('title');
-      TITLE_DEFAULT = this.$title.text();
       this.$lane2 = $('.lane-2');
-      this.$share = $('.share');
       this.$gametitle = $('.game-title');
       this.$livescore = $('.live-score');
       this.$level = $('.level');
@@ -110,10 +100,6 @@ $(function() {
       this.$countdown = $('.countdown');
       this.$score = $('.score span');
       this.$best = $('.best span');
-      this.$adt = $('.adt');
-      this.$ad = $('.ad').css({
-        width: GAME_WIDTH + 'px'
-      });
       this.$gameoverUp = $('.gameover-up').css({
         height: Math.ceil(GAME_HEIGHT / 2) + 'px'
       });
@@ -127,7 +113,6 @@ $(function() {
       this.$hidden = $('.hidden');
       this.best = localStorage.getItem('shades-best') || 0;
       this.theme = localStorage.getItem('shades-theme') || 0;
-      $('#wx_pic img').attr('src', 'images/theme' + this.theme + '.jpg');
       this.$best.text(this.best);
       for (var i = 0; i <= MAX_THEME; i++) {
         ALL_THEME_CLASS += 'theme-' + i + ' ';
@@ -187,24 +172,7 @@ $(function() {
       });
       $('.btn-tutorial').on(CLICK_EVENT, function () {
         self.tmpBest = self.best;
-        self.tutorial(1, '您的目标<br><br>用相同颜色的方块<br>组成一排。');
-      });
-      $('.btn-share').on(CLICK_EVENT, function(e) {
-        self.$share.show();
-        e.stopPropagation();
-        $(document).on(CLICK_EVENT, '.overlay', function() {
-          $(document).off(CLICK_EVENT, '.overlay');
-          self.$share.hide();
-        });
-      });
-      $('.btn-more').on(CLICK_EVENT, function (e) {
-        e.stopPropagation();
-        e.preventDefault();
-        // FIXME: Change to APK url and Btn text if is Android
-        if (IS_ANDROID) {
-
-        }
-        window.location.href = MORE_URL;
+        self.tutorial(1, 'Your target<br><br>align shades with the same colour.');
       });
       $('.btn-home').on(CLICK_EVENT, function (e) {
         e.stopPropagation();
@@ -225,9 +193,6 @@ $(function() {
         e.preventDefault();
         self.continue();
       });
-      $('.ads').on(CLICK_EVENT, function () {
-        window.location.href = HFH_LINK;
-      });
       $(document).on('mousedown touchstart', function(e) {
         e.preventDefault();
       });
@@ -235,7 +200,6 @@ $(function() {
 
     this.reset = function () {
       $('.shade').remove();
-      this.$title.text(TITLE_DEFAULT);
       this.$lanes.removeClass('active');
       this.$menu.hide();
       this.$tutorial.hide();
@@ -259,11 +223,7 @@ $(function() {
       this.paused = false;
       this.isTutorial = false;
       this.isFromState = false;
-      this.adfOff();
 
-      if (this._random(1, 100) <= 40) {
-        this.adf = true;
-      }
     };
 
     this.start = function () {
@@ -282,7 +242,6 @@ $(function() {
         self.$level.show();
         self.prepareShade();
         self.transformShade();
-        self.adfOn();
       });
 
       this.score = 0;
@@ -371,7 +330,6 @@ $(function() {
       this.$livescore.show();
       this.$btnpause.show();
       this.$level.show();
-      this.adfOn();
 
       setTimeout(function () {
         self.pause();
@@ -383,9 +341,6 @@ $(function() {
       this.$gameoverUp.show();
       this.$gameoverDown.show();
 
-      if (IS_WECHAT) {
-        this.$title.text(TITLE_DEFAULT + ': Duang Duang，我打到了关卡 ' + this.level + '并且获得了' + this.score + '分，谁敢来挑战我？');
-      }
 
       this.clearState();
 
@@ -468,7 +423,7 @@ $(function() {
       $('.btn-begin .content').removeClass('in');
       $('.lane').off('mousedown touchstart', this.onLaneCick);
 
-      $('.btn-next').text(btn || '尝试').on(CLICK_EVENT, function () {
+      $('.btn-next').text(btn || 'Try').on(CLICK_EVENT, function () {
         $('.btn-next').off(CLICK_EVENT);
         self['stage' + stage].call(self);
       });
@@ -487,7 +442,7 @@ $(function() {
       this.transformShade({stop: 50,
         cb: function () {
           $('.tutorial__text')
-            .html('<p>组成一排</p><p>触摸屏幕移动方块到正确的行列。</p>')
+            .html('<p>align together</p><p>touch screen, move shade to correct lane.</p>')
             .show();
           $('.spot').css({'left': '80%'}).show();
           $('.lane-3, .spot').on(CLICK_EVENT, function () {
@@ -515,7 +470,7 @@ $(function() {
       this.transformShade({stop: 50,
         cb: function () {
           $('.tutorial__text')
-            .html('<p>合并2种颜色</p><p>触摸屏幕移动方块到正确的行列。</p>')
+            .html('<p>combine two colours</p><p>touch screen, move shade to correct lane.</p>')
             .show();
           $('.spot').css({'left': '5%'}).show();
           $('.lane-0, .spot').on(CLICK_EVENT, function () {
@@ -543,10 +498,10 @@ $(function() {
       var self = this, html, btn;
       $('.tutorial__success').show();
       if (this.stage === 1) {
-        html = '提示<br><br>堆叠相同颜色<br>的方块以组成<br>更深的颜色。';
+        html = 'Tips<br><br>combime shades with the same colour<br>to become darker shade.';
       } else if (this.stage === 2) {
-        html = '提示<br><br>向下滑动<br>使方块下降速度更快。<br>教程完成！';
-        btn = '完成';
+        html = 'Tips<br><br>swipe down<br>to move shade faster<br>Tutorial completed!';
+        btn = 'Finish';
       }
       setTimeout(function () {
         self.reset();
@@ -764,9 +719,6 @@ $(function() {
       if (this.isTutorial) {
         return this.tutorialCallback();
       }
-      if (this.lanes[0].length + this.lanes[1].length + this.lanes[2].length + this.lanes[3].length > ADF_COUNT) {
-        this.adfOff();
-      }
       if (this.checkDeath()) {
         this.dead();
       } else {
@@ -957,7 +909,6 @@ $(function() {
           .removeClass(ALL_THEME_CLASS)
           .addClass('theme-' + self.theme);
         $('.btn-begin .content').addClass('in');
-        $('#wx_pic img').attr('src', 'images/theme' + self.theme + '.jpg');
       });
 
       $('.btn-begin .content').removeClass('in');
@@ -1014,23 +965,6 @@ $(function() {
 
     this.getBottom = function (len) {
       return AD_HEIGHT + (len === 0 ? 0 : (len * SHADE_HEIGHT - 1));
-    };
-
-    this.adfOn = function () {
-      if (this.adf) {
-        this.$adt.addClass('adf');
-        if (!window.HFH) {
-          this.$ad.show();
-        }
-      }
-    };
-
-    this.adfOff = function () {
-      if (this.adf) {
-        this.$adt.removeClass('adf');
-        this.$ad.hide();
-        this.adf = false;
-      }
     };
 
     this._random = function(min, max) {
