@@ -54,7 +54,7 @@ $(function() {
     };
     var GAP = 10;
     var CLEAR_INC = 10;
-    var AD_HEIGHT = 60;
+    var AD_HEIGHT = 50;
     var PREPARE_SHADE_HEIGHT = 10;
     var MAX_SHADES = 11;
     var MAX_THEME = 5;
