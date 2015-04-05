@@ -90,7 +90,7 @@ body { margin: 0; font-family: 'Shades', Helvetica, Georgia; -webkit-touch-callo
 
 .overlay { position: absolute; top: 0; bottom: 0; left: 0; right: 0; z-index: 1000; }
 
-#game { position: relative; overflow: hidden; background: #666; }
+#game { position: relative; overflow: hidden; background: #666; margin: 0 auto; }
 
 .game-title { position: absolute; font-size: 30px; top: 20%; left: 0; right: 0; text-align: center; color: white; letter-spacing: 14px; }
 .game-title.out { -webkit-transition: -webkit-transform 0.5s ease; transition: transform 0.5s ease; -webkit-transform: translate3d(0, -400px, 0); transform: translate3d(0, -400px, 0); }
