@@ -1,0 +1,108 @@
+// http://www.google.com/design/spec/style/color.html#color-color-palette
+$green0: #C8E6C9;
+$green1: #81C784;
+$green2: #4CAF50;
+$green3: #388E3C;
+$green4: #1B5E20;
+.theme-0 {
+  .bg-0 { background-color: $green0; }
+  .bg-1 { background-color: $green1; }
+  .bg-2 { background-color: $green2; }
+  .bg-3 { background-color: $green3; }
+  .bg-4 { background-color: $green4; }
+  .color-0 { color: $green0; }
+  .color-1 { color: $green1; }
+  .color-2 { color: $green2; }
+  .color-3 { color: $green3; }
+  .color-4 { color: $green4; }
+}
+
+$yellow0: #F0F4C3;
+$yellow1: #DCE775;
+$yellow2: #CDDC39;
+$yellow3: #AFB42B;
+$yellow4: #827717;
+.theme-1 {
+  .bg-0 { background-color: $yellow0; }
+  .bg-1 { background-color: $yellow1; }
+  .bg-2 { background-color: $yellow2; }
+  .bg-3 { background-color: $yellow3; }
+  .bg-4 { background-color: $yellow4; }
+  .color-0 { color: $yellow0; }
+  .color-1 { color: $yellow1; }
+  .color-2 { color: $yellow2; }
+  .color-3 { color: $yellow3; }
+  .color-4 { color: $yellow4; }
+}
+
+$red0: #FFCDD2;
+$red1: #E57373;
+$red2: #F44336;
+$red3: #D32F2F;
+$red4: #B71C1C;
+.theme-2 {
+  .bg-0 { background-color: $red0; }
+  .bg-1 { background-color: $red1; }
+  .bg-2 { background-color: $red2; }
+  .bg-3 { background-color: $red3; }
+  .bg-4 { background-color: $red4; }
+  .color-0 { color: $red0; }
+  .color-1 { color: $red1; }
+  .color-2 { color: $red2; }
+  .color-3 { color: $red3; }
+  .color-4 { color: $red4; }
+}
+
+$blue0: #C5CAE9;
+$blue1: #7986CB;
+$blue2: #3F51B5;
+$blue3: #303F9F;
+$blue4: #1A237E;
+.theme-3 {
+  .bg-0 { background-color: $blue0; }
+  .bg-1 { background-color: $blue1; }
+  .bg-2 { background-color: $blue2; }
+  .bg-3 { background-color: $blue3; }
+  .bg-4 { background-color: $blue4; }
+  .color-0 { color: $blue0; }
+  .color-1 { color: $blue1; }
+  .color-2 { color: $blue2; }
+  .color-3 { color: $blue3; }
+  .color-4 { color: $blue4; }
+}
+
+$purple0: #E1BEE7;
+$purple1: #BA68C8;
+$purple2: #9C27B0;
+$purple3: #7B1FA2;
+$purple4: darken($purple3, 20%);
+.theme-4 {
+  .bg-0 { background-color: $purple0; }
+  .bg-1 { background-color: $purple1; }
+  .bg-2 { background-color: $purple2; }
+  .bg-3 { background-color: $purple3; }
+  .bg-4 { background-color: $purple4; }
+  .color-0 { color: $purple0; }
+  .color-1 { color: $purple1; }
+  .color-2 { color: $purple2; }
+  .color-3 { color: $purple3; }
+  .color-4 { color: $purple4; }
+}
+
+$orange0: #FFCCBC;
+$orange1: #FF8A65;
+$orange2: #FF5722;
+$orange3: #E64A19;
+$orange4: #BF360C;
+.theme-5 {
+  .bg-0 { background-color: $orange0; }
+  .bg-1 { background-color: $orange1; }
+  .bg-2 { background-color: $orange2; }
+  .bg-3 { background-color: $orange3; }
+  .bg-4 { background-color: $orange4; }
+  .color-0 { color: $orange0; }
+  .color-1 { color: $orange1; }
+  .color-2 { color: $orange2; }
+  .color-3 { color: $orange3; }
+  .color-4 { color: $orange4; }
+}
